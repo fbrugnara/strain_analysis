@@ -1,3 +1,4 @@
+% Bla some change in gui_reduce
 function [ output_args ] = gui_reduce( input_args )
 %GUI_REDUCE Summary of this function goes here
 %   Detailed explanation goes here
