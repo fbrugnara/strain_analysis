@@ -20,6 +20,10 @@
 %Get Filenames and the Path of stitched fields(only works if they are in one directory:
 workingdir=mfilename('fullpath');
 workingdir=fileparts(workingdir);
+[beam_scale_filen,beam_scale_path]=uigetfile(fullfile(workingdir,'../01_rawData','*.tif'),'Select .tif 01_rawData','MultiSelect','off');
+scale_beam(fullfile(beam_scale_path,beam_scale_filen),45)
+% workingdir=mfilename('fullpath');
+% workingdir=fileparts(workingdir);
 [DICfilen,DICpath]=uigetfile(fullfile(workingdir,'../04_StitchedFields','*.mat'),'Select .mat 04_StitchedFields','MultiSelect','on');
     if isequal(DICfilen, 0)
         disp('User selected Cancel')
@@ -51,7 +55,7 @@ end
 % radius = rectangle , length = 100px width =50px
 
 %wframes[1,3,4]  
-wframes=[1,3,4];
+wframes=[1];
     for i=1:length(wframes)
        [~,wframes_filen{1,i},~]=fileparts(DICfilen{1,wframes(i)})
    end
