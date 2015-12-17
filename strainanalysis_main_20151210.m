@@ -54,14 +54,17 @@ end
 %strain gauge center strgau_center=(ypx,xpx)
 % radius = rectangle , length = 100px width =50px
 
-%wframes[1,3,4]  
-wframes=[1];
-    for i=1:length(wframes)
-       [~,wframes_filen{1,i},~]=fileparts(DICfilen{1,wframes(i)})
-   end
+% %wframes[1,3,4]  
+%  wframes=[1,2];
+%     for i=1:length(wframes)
+%        [~,wframes_filen{1,i},~]=fileparts(DICfilen{1,wframes(i)})
+%    end
+
+[wframes,wframes_indices]=wframes_gui(DICfilen)
 wfields={'exx','eyy'};
 %strgau_center=(ypx,xpx);
 strgau_center=[300,6040];
 %radius('r'/'c',width,length);
 radius={'r',20,80};
-result=fieldextraction(loadedDIC,wframes,wframes_filen,wfields,strgau_center,radius);
+%result=fieldextraction(loadedDIC,wframes,wframes_filen,wfields,strgau_center,radius);
+result=fieldextraction(loadedDIC,wframes_indices,wframes,wfields,strgau_center,radius);
