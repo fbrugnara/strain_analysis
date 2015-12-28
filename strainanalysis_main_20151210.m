@@ -23,10 +23,10 @@ workingdir=fileparts(workingdir);
 
 %% Only run calibration if the variable cal_scale_beam does not exist
 if exist('cal_scale_beam','var') == 0
-[beam_scale_filen,beam_scale_path]=uigetfile(fullfile(workingdir,'../01_rawData','*.tif'),'Select .tif 01_rawData','MultiSelect','off');
+
 beam_height=45;
-cal_image_path=fullfile(beam_scale_path,beam_scale_filen);
-cal_scale_beam=scale_beam(cal_image_path,beam_height);
+
+cal_scale_beam=scale_beam(workingdir,beam_height);
 end
 
 %%
