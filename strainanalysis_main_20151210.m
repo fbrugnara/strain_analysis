@@ -17,13 +17,19 @@
 % Florian Brugnara & Felix Bugl 2015-12-10
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Get Filenames and the Path of stitched fields(only works if they are in one directory:
+%%Get Filenames and the Path of stitched fields(only works if they are in one directory:
 workingdir=mfilename('fullpath');
 workingdir=fileparts(workingdir);
+
+%% Only run calibration if the variable cal_scale_beam does not exist
+if exist('cal_scale_beam','var') == 0
 [beam_scale_filen,beam_scale_path]=uigetfile(fullfile(workingdir,'../01_rawData','*.tif'),'Select .tif 01_rawData','MultiSelect','off');
 beam_height=45;
 cal_image_path=fullfile(beam_scale_path,beam_scale_filen);
-scale_beam(cal_image_path,beam_height)
+cal_scale_beam=scale_beam(cal_image_path,beam_height);
+end
+
+%%
 [DICfilen,DICpath]=uigetfile(fullfile(workingdir,'../04_StitchedFields','*.mat'),'Select .mat 04_StitchedFields','MultiSelect','on');
     if isequal(DICfilen, 0)
         disp('User selected Cancel')
