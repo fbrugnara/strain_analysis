@@ -21,9 +21,9 @@
 workingdir=mfilename('fullpath');
 workingdir=fileparts(workingdir);
 [beam_scale_filen,beam_scale_path]=uigetfile(fullfile(workingdir,'../01_rawData','*.tif'),'Select .tif 01_rawData','MultiSelect','off');
-scale_beam(fullfile(beam_scale_path,beam_scale_filen),45)
-% workingdir=mfilename('fullpath');
-% workingdir=fileparts(workingdir);
+beam_height=45;
+cal_image_path=fullfile(beam_scale_path,beam_scale_filen);
+scale_beam(cal_image_path,beam_height)
 [DICfilen,DICpath]=uigetfile(fullfile(workingdir,'../04_StitchedFields','*.mat'),'Select .mat 04_StitchedFields','MultiSelect','on');
     if isequal(DICfilen, 0)
         disp('User selected Cancel')
@@ -60,7 +60,7 @@ end
 %        [~,wframes_filen{1,i},~]=fileparts(DICfilen{1,wframes(i)})
 %    end
 
-[wframes,wframes_indices]=wframes_gui(DICfilen)
+[wframes,wframes_indices]=wframes_gui(DICfilen);
 wfields={'exx','eyy'};
 %strgau_center=(ypx,xpx);
 strgau_center=[300,6040];
