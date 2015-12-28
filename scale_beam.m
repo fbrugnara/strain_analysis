@@ -1,11 +1,14 @@
-function [ scale ] = scale_beam( beam_image,height_beam )
+function [ scale ] = scale_beam( workingdir,height_beam )
 %SCALE_BEAM Summary of this function goes here
 %   Detailed explanation goes here
+
+[beam_scale_filen,beam_scale_path]=uigetfile(fullfile(workingdir,'../01_rawData','*.tif'),'Select .tif 01_rawData','MultiSelect','off');
+beam_image=fullfile(beam_scale_path,beam_scale_filen);
+
 f = figure();
 f.MenuBar='none';
 ax=gca;
 lines=10;
-
 imshow(beam_image,'Parent',ax);
 title(ax,'Place ends of distance tool on edge of object and press enter. (repeats 10 times)')
 xlim=get(gca,'Xlim');
