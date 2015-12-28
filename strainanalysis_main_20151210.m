@@ -59,9 +59,13 @@ chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
 %% Load frames
 lenChosenFrames=length(chosen_frames);
 %loadedframes=cell(1,lenChosenFrames);
+h = waitbar(0,'Please wait...')
 for i = 1:lenChosenFrames
+
 loadedframes.(wframes_wo_ext{1,i})=load(chosen_frames{1,i});
+waitbar(i/lenChosenFrames)
 end
+close(h)
 
 %% Default values for fieldextraction
 % which frames = first loaded frame
@@ -76,7 +80,7 @@ end
 %    end
 
 %[wframes,wframes_indices]=wframes_gui(DICfilen);
-wfields={'exx','eyy'};
+wfields={'exx','eyy','x'};
 %strgau_center=(ypx,xpx);
 strgau_center=[300,6040];
 %radius('r'/'c',width,length);
