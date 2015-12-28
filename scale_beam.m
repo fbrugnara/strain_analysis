@@ -1,7 +1,10 @@
-function [ scale ] = scale_beam( workingdir,height_beam )
+function [ scale] = scale_beam( workingdir )
 %SCALE_BEAM Summary of this function goes here
 %   Detailed explanation goes here
-
+instruction=msgbox({'Calibration:' 'Please put in the height of the object and choose a calibration image.'});
+uiwait(instruction);
+height_beam=inputdlg('Height of object[cm]:','Input height of object',1,{'45'});
+height_beam=str2double(height_beam);
 [beam_scale_filen,beam_scale_path]=uigetfile(fullfile(workingdir,'../01_rawData','*.tif'),'Select .tif 01_rawData','MultiSelect','off');
 beam_image=fullfile(beam_scale_path,beam_scale_filen);
 
