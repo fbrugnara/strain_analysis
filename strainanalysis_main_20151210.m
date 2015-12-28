@@ -23,36 +23,45 @@ workingdir=fileparts(workingdir);
 
 %% Only run calibration if the variable cal_scale_beam does not exist
 if exist('cal_scale_beam','var') == 0
-
-beam_height=45;
-
-cal_scale_beam=scale_beam(workingdir,beam_height);
+    [cal_scale_beam]=scale_beam(workingdir);
 end
 
-%%
-[DICfilen,DICpath]=uigetfile(fullfile(workingdir,'../04_StitchedFields','*.mat'),'Select .mat 04_StitchedFields','MultiSelect','on');
-    if isequal(DICfilen, 0)
-        disp('User selected Cancel')
-        return;
-    end
-    
-    %If only one .mat file is selected uigetfile returns a str.
-    %and in the next for loop there is a reference to a cell array
-    DICfilen = cellstr(DICfilen);
-    
-    for i = 1:length(DICfilen)
-        disp(fullfile(DICpath, DICfilen{i}))
-    end
-%%gui to reduce data in frames
-gui_red = figure('Visible','off','Position',[360,500,450,285]);
+% %% Replaced by next section
+% [DICfilen,DICpath]=uigetfile(fullfile(workingdir,'../04_StitchedFields','*.mat'),'Select .mat 04_StitchedFields','MultiSelect','on');
+%     if isequal(DICfilen, 0)
+%         disp('User selected Cancel')
+%         return;
+%     end
+%     
+%     %If only one .mat file is selected uigetfile returns a str.
+%     %and in the next for loop there is a reference to a cell array
+%     DICfilen = cellstr(DICfilen);
+%     
+%     for i = 1:length(DICfilen)
+%         disp(fullfile(DICpath, DICfilen{i}))
+%     end
+% %%gui to reduce data in frames
+% gui_red = figure('Visible','off','Position',[360,500,450,285]);
 
+%% Choose which Frames to use 
+dir_stitchedfields = fullfile(workingdir,'../04_StitchedFields','*.mat');
+contents_stitchedfields=dir(dir_stitchedfields);
 
+fieldnames_stitchedfields={contents_stitchedfields(:).name};
+ [wframes,wframes_indices]=wframes_gui(fieldnames_stitchedfields);
+chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
     
-%% Load the frames in to the workspace
-for i= 1:length(DICfilen)
-loadedDIC{i}=load(fullfile(DICpath,DICfilen{i}));
+% %% Load the frames in to the workspace Replace by next section
+% for i= 1:length(DICfilen)
+% loadedDIC{i}=load(fullfile(DICpath,DICfilen{i}));
+% end
+
+%% Load frames
+lenChosenFrames=length(chosen_frames);
+loadedframes=cell(1,lenChosenFrames);
+for i = 1:lenChosenFrames
+loadedframes{i}=load(chosen_frames{1,i});
 end
-
 
 %% Default values for fieldextraction
 % which frames = first loaded frame
@@ -66,7 +75,7 @@ end
 %        [~,wframes_filen{1,i},~]=fileparts(DICfilen{1,wframes(i)})
 %    end
 
-[wframes,wframes_indices]=wframes_gui(DICfilen);
+%[wframes,wframes_indices]=wframes_gui(DICfilen);
 wfields={'exx','eyy'};
 %strgau_center=(ypx,xpx);
 strgau_center=[300,6040];
