@@ -25,31 +25,35 @@
       handles = guidata(f.fig);
       wframes=handles.DICfilen;
       for i=1:length(wframes)
-      [~,wframes{1,i},~]=fileparts(wframes{1,i})
+      %without .mat    
+      %[~,wframes{1,i},~]=fileparts(wframes{1,i})
+      % with .mat 
+      wframes{1,i}=wframes{1,i};
       end
-      wframes_indices=handles.wframes_indices
+      wframes_indices=handles.wframes_indices;
       close(f.fig)
 
    end
    %% callback of the submit button
-   function pushbuttoncallback(hObject,event,i,DICfilen,f,handles)
+   function pushbuttoncallback(~,~,~,DICfilen,f,handles)
 
     lenDICfilen=length(DICfilen);
     
     %Check the values of the checkboxes 
     % .Value returns the value of the checkbox zero unchecked
     %  one checked
+    val=zeros(1,lenDICfilen);
     for k=1:lenDICfilen
           val(k)=f.cbh(1,k).Value; 
     end
     %find the indices we want to delete (where val is zero)
     indices =find(val(1,:)==0);
-    wframes_indices=find(val(1,:))
+    wframes_indices=find(val(1,:));
     %if the is no entry we want to delete (indices is empty)
     if isempty(indices) == 0
     DICfilen(:,indices)=[];
     else
-       DICfilen=DICfilen;
+      % DICfilen=DICfilen;
     end
     handles.wframes_indices=wframes_indices;
     handles.DICfilen=DICfilen;
