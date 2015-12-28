@@ -48,7 +48,7 @@ dir_stitchedfields = fullfile(workingdir,'../04_StitchedFields','*.mat');
 contents_stitchedfields=dir(dir_stitchedfields);
 
 fieldnames_stitchedfields={contents_stitchedfields(:).name};
- [wframes,wframes_indices]=wframes_gui(fieldnames_stitchedfields);
+ [wframes,wframes_wo_ext,wframes_indices]=wframes_gui(fieldnames_stitchedfields);
 chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
     
 % %% Load the frames in to the workspace Replace by next section
@@ -58,9 +58,9 @@ chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
 
 %% Load frames
 lenChosenFrames=length(chosen_frames);
-loadedframes=cell(1,lenChosenFrames);
+%loadedframes=cell(1,lenChosenFrames);
 for i = 1:lenChosenFrames
-loadedframes{i}=load(chosen_frames{1,i});
+loadedframes.(wframes_wo_ext{1,i})=load(chosen_frames{1,i});
 end
 
 %% Default values for fieldextraction
@@ -82,4 +82,5 @@ strgau_center=[300,6040];
 %radius('r'/'c',width,length);
 radius={'r',20,80};
 %result=fieldextraction(loadedDIC,wframes,wframes_filen,wfields,strgau_center,radius);
-result=fieldextraction(loadedDIC,wframes_indices,wframes,wfields,strgau_center,radius);
+%result=fieldextraction(loadedframes,wframes_wo_ext,wframes_wo_ext,wfields,strgau_center,radius);
+result=fieldextraction2(loadedframes,wframes_wo_ext,wfields,strgau_center,radius);
