@@ -1,5 +1,5 @@
    %% function wframes_gui gets DICpath and DICfilen and returns selected frames
-   function [wframes,wframes_indices]=wframes_gui( DICfilen )
+   function [wframes,wframes_wo_ext,wframes_indices]=wframes_gui( DICfilen )
    %create figure
    f.fig=figure;
    handles=guihandles(f.fig);
@@ -24,9 +24,10 @@
 %
       handles = guidata(f.fig);
       wframes=handles.DICfilen;
+      wframes_wo_ext=cell(1,length(wframes));
       for i=1:length(wframes)
       %without .mat    
-      %[~,wframes{1,i},~]=fileparts(wframes{1,i})
+      [~,wframes_wo_ext{1,i},~]=fileparts(wframes{1,i});
       % with .mat 
       wframes{1,i}=wframes{1,i};
       end
@@ -52,7 +53,7 @@
     %if the is no entry we want to delete (indices is empty)
     if isempty(indices) == 0
     DICfilen(:,indices)=[];
-    else
+    %else
       % DICfilen=DICfilen;
     end
     handles.wframes_indices=wframes_indices;
