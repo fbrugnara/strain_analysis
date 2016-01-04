@@ -1,5 +1,5 @@
    %% function wframes_gui gets DICpath and DICfilen and returns selected frames
-   function [wframes,wframes_indices]=wframes_gui( DICfilen )
+   function [wframes,wframes_wo_ext,wframes_indices]=wframes_gui( DICfilen )
    %create figure
    f.fig=figure;
    handles=guihandles(f.fig);
@@ -26,7 +26,7 @@
       wframes=handles.DICfilen;
       for i=1:length(wframes)
       %without .mat    
-      %[~,wframes{1,i},~]=fileparts(wframes{1,i})
+      [~,wframes_wo_ext{1,i},~]=fileparts(wframes{1,i});
       % with .mat 
       wframes{1,i}=wframes{1,i};
       end
