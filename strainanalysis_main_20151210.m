@@ -59,10 +59,12 @@ chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
 %% Load frames
 lenChosenFrames=length(chosen_frames);
 %loadedframes=cell(1,lenChosenFrames);
+waitb = waitbar(0,'Please wait...');
 for i = 1:lenChosenFrames
 loadedframes.(wframes_wo_ext{1,i})=load(chosen_frames{1,i});
+waitbar(i / lenChosenFrames);
 end
-
+close(waitb)
 %% Default values for fieldextraction
 % which frames = first loaded frame
 % which fields = e_xx & e_yy
