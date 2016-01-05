@@ -23,7 +23,7 @@ workingdir=fileparts(workingdir);
 
 %% Only run calibration if the variable cal_scale_beam does not exist
 if exist('cal_scale_beam','var') == 0
-    [cal_scale_beam]=scale_beam(workingdir);
+    [cal_scale_beam,x_origin,y_origin]=scale_beam(workingdir);
 end
 
 % %% Replaced by next section
