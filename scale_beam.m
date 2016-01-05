@@ -1,4 +1,4 @@
-function [ scale] = scale_beam( workingdir )
+function [scale,x_origin,y_origin] = scale_beam( workingdir )
 %SCALE_BEAM Summary of this function goes here
 %   Detailed explanation goes here
 instruction=msgbox({'Calibration:' 'Please put in the height of the object and choose a calibration image.'});
@@ -39,5 +39,12 @@ end
 close(f);
 mean_pixel_length=mean(pixel_length);
 scale=mean_pixel_length/height_beam;
- 
+f = figure();
+ax=gca;
+imshow(fullfile(beam_scale_path,beam_scale_filen),'Parent',ax);
+[x_origin,y_origin]=ginput(1);
+x_origin=abs(x_origin);
+y_origin=abs(y_origin);
+%[x,y]=getpts(f);
+close(f);
 end
