@@ -86,3 +86,18 @@ radius={'r',20,80};
 %result=fieldextraction(loadedDIC,wframes,wframes_filen,wfields,strgau_center,radius);
 %result=fieldextraction(loadedframes,wframes_wo_ext,wframes_wo_ext,wfields,strgau_center,radius);
 result=fieldextraction2(loadedframes,wframes_wo_ext,wfields,strgau_center,radius);
+
+%% read xls dms position data
+filename='/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls/DMShor.xls';
+[~,sheets]=xlsfinfo(filename);
+for i=1:length(sheets)
+[num{1,i},txt{1,i},raw{1,i}]=xlsread(filename,sheets{1,i});
+end
+
+for i=1:length(raw)
+    for j=2:size(raw{1,i},2)
+        for k=2:size(raw{1,i},1)
+raw_px{1,i}{k,j}=raw{1,i}{k,j}*cal_scale_beam;
+        end
+    end
+end
