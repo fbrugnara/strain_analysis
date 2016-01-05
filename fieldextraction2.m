@@ -9,7 +9,7 @@ width_half=ceil(radius{2})/2;
     if radius{1,1}=='r'
 for i=1:length(wframes_wo_ext)
     for j=1:length(wfields)
-extracted_data.(wframes_wo_ext{1,i}).(wfields{1,j})=loadedframes.(wframes_wo_ext{1,i}).field_red.(wfields{1,j})(y-length_half:y+length_half,x-width_half:x+width_half);
+extracted_data.(wframes_wo_ext{1,i}).(wfields{1,j})=loadedframes.(wframes_wo_ext{1,i}).completeField.(wfields{1,j})(y-length_half:y+length_half,x-width_half:x+width_half);
     end
 end
     end
