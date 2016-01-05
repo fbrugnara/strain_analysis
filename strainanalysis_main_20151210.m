@@ -97,7 +97,7 @@ end
 for i=1:length(raw)
     for j=2:size(raw{1,i},2)
         for k=2:size(raw{1,i},1)
-raw_px{1,i}{k,j}=raw{1,i}{k,j}*cal_scale_beam;
+raw_px{1,i}{k,j}=raw{1,i}{k,j}*cal_scale_beam-165*cal_scale_beam;
         end
     end
 end
