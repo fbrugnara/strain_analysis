@@ -78,14 +78,14 @@ close(waitb)
 %    end
 
 %[wframes,wframes_indices]=wframes_gui(DICfilen);
-wfields={'exx','eyy'};
+%wfields={'exx','eyy'};
 %strgau_center=(ypx,xpx);
-strgau_center=[300,6040];
+%strgau_center=[300,6040];
 %radius('r'/'c',width,length);
-radius={'r',20,80};
+%radius={'r',20,80};
 %result=fieldextraction(loadedDIC,wframes,wframes_filen,wfields,strgau_center,radius);
 %result=fieldextraction(loadedframes,wframes_wo_ext,wframes_wo_ext,wfields,strgau_center,radius);
-result=fieldextraction2(loadedframes,wframes_wo_ext,wfields,strgau_center,radius);
+%result=fieldextraction2(loadedframes,wframes_wo_ext,wfields,strgau_center,radius);
 
 %% read xls dms position data
 filename='/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls/DMShor.xls';
@@ -97,7 +97,20 @@ end
 for i=1:length(raw)
     for j=2:size(raw{1,i},2)
         for k=2:size(raw{1,i},1)
-raw_px{1,i}{k,j}=raw{1,i}{k,j}*cal_scale_beam-165*cal_scale_beam;
+            if j==2
+raw_px{1,i}{k,j}=raw{1,i}{k,j}*cal_scale_beam-(165*cal_scale_beam-x_origin);
+
+            else 
+raw_px{1,i}{k,j}=abs(y_origin-raw{1,i}{k,j}*cal_scale_beam);
+            end
         end
     end
 end
+
+%% Evaluation of Data Variant 1 Strauss fixed length of radius (20mm,15mm,10mm)
+
+radius_width=1;
+radius_length=[2*cal_scale_beam,1.5*cal_scale_beam,1.0*cal_scale_beam];
+radius={'r',radius_width,radius_length};
+result=fieldextraction2(loadedframes,wframes_wo_ext,'exx',raw_px,radius_length)
+
