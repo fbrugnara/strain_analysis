@@ -121,5 +121,66 @@ res_hor_strauss(i)=fieldextraction2(loadedframes,wframes_wo_ext,{'exx'},strgau_c
 end
 
 % % corr2(res_hor_strauss)
- plot(res_hor_strauss(3).Beam3Processed_00364_s.exx(1,:))
+% hold on
+% figure
+% ax=subplot(1,1,1)
+% x=(1:1:size(res_hor_strauss(1).Beam3Processed_00000_s.exx(1,:),2));
+% plot(ax,x,res_hor_strauss(1).Beam3Processed_00000_s.exx(1,:),x,res_hor_strauss(1).Beam3Processed_00000_s.exx(2,:))
+%  lsline
+
+
+% %ax=subplot(1,1,1)
+% x=(1:1:size(res_hor_strauss(2).Beam3Processed_00364_s.exx(1,:),2));
+% scatter(ax,x,res_hor_strauss(2).Beam3Processed_00364_s.exx(1,:))
+%  lsline
+% 
+% %ax=subplot(1,1,1)
+% x=(1:1:size(res_hor_strauss(3).Beam3Processed_00364_s.exx(1,:),2));
+% scatter(ax,x,res_hor_strauss(3).Beam3Processed_00364_s.exx(1,:))
+% lsline
+
 % plot(  
+% clear('except','cal_scale_beam','x_origin y_origin')
+
+
+%  varnames = {'cal_scale_beam','cal_scale_beam','y_origin','x_origin', 'res_hor_strauss'};
+%  clearvars('-except',varnames{:});
+
+ %% plot exx on TnD2 
+[data_filen,data_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/09_results','*.mat'),'Select .mat for results','MultiSelect','on');
+[beam_filen,beam_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/04_StitchedFields','*.mat'),'Select .mat for results','MultiSelect','on');
+for i=1:length(data_filen)
+      %without .mat    
+      [~,data_filen_wo_ext{1,i},~]=fileparts(data_filen{1,i});
+      [~,beam_filen_wo_ext{1,i},~]=fileparts(beam_filen{1,i});
+      
+end
+ for t=1:length(data_filen)
+    fileName=data_filen_wo_ext{t}
+    fieldName=beam_filen_wo_ext{t}
+    resultStruct.(fileName) = load(['/home/bowkatz/Documents/MATLAB/BachelorThesis/09_results/' data_filen{t}])
+    
+    hold on
+    %ax1=subplot(2,1,1)
+    %ax2=subplot(2,1,2)
+    %if le(t,8) == 1
+    %m = {'+','o','*','.','x','s','d','^','v','>','<','p','h'};
+    %set(gca(), 'LineStyleOrder',m, 'ColorOrder',[0 0 0])
+    plot(resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
+    
+    %else
+       % plot(ax2,resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
+    %end
+ end
+  hold off  
+ 
+     legend(data_filen_wo_ext)
+for t=1:length(data_filen);
+    figure
+    fileName=data_filen_wo_ext{t};
+    fieldName=beam_filen_wo_ext{t};
+plot(resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
+ylim([-2.5*10^(-3) 0.5*10^(-3)])
+title(fileName)
+t
+end
