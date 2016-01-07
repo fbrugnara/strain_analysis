@@ -88,7 +88,7 @@ close(waitb)
 %result=fieldextraction2(loadedframes,wframes_wo_ext,wfields,strgau_center,radius);
 
 %% read xls dms position data
-filename='/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls/DMShor.xls';
+filename='/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls/DMShor_kor.xls';
 [~,sheets]=xlsfinfo(filename);
 for i=1:length(sheets)
 [num{1,i},txt{1,i},raw{1,i}]=xlsread(filename,sheets{1,i});
@@ -111,6 +111,15 @@ end
 
 radius_width=1;
 radius_length=[2*cal_scale_beam,1.5*cal_scale_beam,1.0*cal_scale_beam];
-radius={'r',radius_width,radius_length};
-result=fieldextraction2(loadedframes,wframes_wo_ext,'exx',raw_px,radius_length)
+strgau_x=raw_px{1,1}{2,2}
+strgau_y=raw_px{1,1}{2,3}
+strgau_center=[strgau_x,strgau_y];
+for i=1:length(radius_length)
+radius{1,i}={'r',radius_width,radius_length(1,i)}
+%radius={'r',radius_width,107.5056}
+res_hor_strauss(i)=fieldextraction2(loadedframes,wframes_wo_ext,{'exx'},strgau_center,radius{1,i})
+end
 
+% % corr2(res_hor_strauss)
+ plot(res_hor_strauss(3).Beam3Processed_00364_s.exx(1,:))
+% plot(  
