@@ -8,12 +8,12 @@
         %place checkboxes and name them after DICfilen(i)
         for i=1:length(DICfilen); 
             f.cbh(i) = uicontrol(f.fig,'Style','checkbox','String',DICfilen(i), ...
-            'Value',1,'Position',[30 20*i 130 20]);
+            'Value',1,'Position',[30 20*i 300 20]);
         end
         
         % Place Button to Submit values 
         f.btn = uicontrol('Style', 'pushbutton', 'String', 'Submit',...
-        'Position', [20 20*(i+1) 130 20],...
+        'Position', [20 20*(i+1) 300 20],...
         'Callback',{@pushbuttoncallback,i,DICfilen,f,handles});
     uiwait(f.fig)
 %     guidata(hObject,handles)
