@@ -17,7 +17,7 @@
 % Florian Brugnara & Felix Bugl 2015-12-10
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%Get Filenames and the Path of stitched fields(only works if they are in one directory:
+%% Get Filenames and the Path of stitched fields(only works if they are in one directory:
 workingdir=mfilename('fullpath');
 workingdir=fileparts(workingdir);
 
@@ -88,6 +88,39 @@ close(waitb)
 %result=fieldextraction2(loadedframes,wframes_wo_ext,wfields,strgau_center,radius);
 
 %% read xls dms position data
+[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
+for i=1:length(xls_filen)
+    xls_filename=xls_filen{i};
+    xls_full=fullfile(xls_path,xls_filename)
+    [~,sheets{i},~]=xlsfinfo(xls_full)
+ 
+    for j=1:length(sheets{i})
+        if strfind(sheets{1,i}{1,j},'TnH')
+        [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
+        strgau_name_hor{i,j}=cur_sheet_txt{2:end,1}
+        elseif strfind(sheets{1,i}{1,j},'TnV')
+        [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
+        strgau_name_vert{i,j}=cur_sheet_txt{2:end,1};
+        end
+    end
+    
+end
+
+% for i=1:length(xls_filen)
+%    
+% end
+
+% for i=1:length(sheets)
+%     if strfind(sheets{i},'TnV')==1
+%         strgau_align=
+%     elseif strfind(sheets{i},'TnH')==1
+%         
+%     else
+%         disp('komm oida fick dich welche daten schiebst ma rein!?');
+%     end
+% end
+
+
 filename='/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls/DMShor_kor.xls';
 [~,sheets]=xlsfinfo(filename);
 for i=1:length(sheets)
@@ -146,41 +179,41 @@ end
 %  varnames = {'cal_scale_beam','cal_scale_beam','y_origin','x_origin', 'res_hor_strauss'};
 %  clearvars('-except',varnames{:});
 
- %% plot exx on TnD2 
-[data_filen,data_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/09_results','*.mat'),'Select .mat for results','MultiSelect','on');
-[beam_filen,beam_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/04_StitchedFields','*.mat'),'Select .mat for results','MultiSelect','on');
-for i=1:length(data_filen)
-      %without .mat    
-      [~,data_filen_wo_ext{1,i},~]=fileparts(data_filen{1,i});
-      [~,beam_filen_wo_ext{1,i},~]=fileparts(beam_filen{1,i});
-      
-end
- for t=1:length(data_filen)
-    fileName=data_filen_wo_ext{t}
-    fieldName=beam_filen_wo_ext{t}
-    resultStruct.(fileName) = load(['/home/bowkatz/Documents/MATLAB/BachelorThesis/09_results/' data_filen{t}])
-    
-    hold on
-    %ax1=subplot(2,1,1)
-    %ax2=subplot(2,1,2)
-    %if le(t,8) == 1
-    %m = {'+','o','*','.','x','s','d','^','v','>','<','p','h'};
-    %set(gca(), 'LineStyleOrder',m, 'ColorOrder',[0 0 0])
-    plot(resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
-    
-    %else
-       % plot(ax2,resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
-    %end
- end
-  hold off  
- 
-     legend(data_filen_wo_ext)
-for t=1:length(data_filen);
-    figure
-    fileName=data_filen_wo_ext{t};
-    fieldName=beam_filen_wo_ext{t};
-plot(resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
-ylim([-2.5*10^(-3) 0.5*10^(-3)])
-title(fileName)
-t
-end
+%  %% plot exx on TnD2 
+% [data_filen,data_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/09_results','*.mat'),'Select .mat for results','MultiSelect','on');
+% [beam_filen,beam_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/04_StitchedFields','*.mat'),'Select .mat for results','MultiSelect','on');
+% for i=1:length(data_filen)
+%       %without .mat    
+%       [~,data_filen_wo_ext{1,i},~]=fileparts(data_filen{1,i});
+%       [~,beam_filen_wo_ext{1,i},~]=fileparts(beam_filen{1,i});
+%       
+% end
+%  for t=1:length(data_filen)
+%     fileName=data_filen_wo_ext{t}
+%     fieldName=beam_filen_wo_ext{t}
+%     resultStruct.(fileName) = load(['/home/bowkatz/Documents/MATLAB/BachelorThesis/09_results/' data_filen{t}])
+%     
+%     hold on
+%     %ax1=subplot(2,1,1)
+%     %ax2=subplot(2,1,2)
+%     %if le(t,8) == 1
+%     %m = {'+','o','*','.','x','s','d','^','v','>','<','p','h'};
+%     %set(gca(), 'LineStyleOrder',m, 'ColorOrder',[0 0 0])
+%     plot(resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
+%     
+%     %else
+%        % plot(ax2,resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
+%     %end
+%  end
+%   hold off  
+%  
+%      legend(data_filen_wo_ext)
+% for t=1:length(data_filen);
+%     figure
+%     fileName=data_filen_wo_ext{t};
+%     fieldName=beam_filen_wo_ext{t};
+% plot(resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
+% ylim([-2.5*10^(-3) 0.5*10^(-3)])
+% title(fileName)
+% t
+% end
