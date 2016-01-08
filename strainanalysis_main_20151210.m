@@ -88,24 +88,159 @@ close(waitb)
 %result=fieldextraction2(loadedframes,wframes_wo_ext,wfields,strgau_center,radius);
 
 %% read xls dms position data
+% [xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
+% for i=1:length(xls_filen)
+%     xls_filename=xls_filen{i};
+%     xls_full=fullfile(xls_path,xls_filename)
+%     [~,sheets{i},~]=xlsfinfo(xls_full)
+%  
+%     for j=1:length(sheets{i})
+%         %load sheet before if 
+%         if strfind(sheets{1,i}{1,j},'TnH')
+%         [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
+%         strgau_name_hor{i,j}=cur_sheet_txt{2:end,1}
+%         elseif strfind(sheets{1,i}{1,j},'TnV')
+%         [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
+%         strgau_name_vert{i,j}=cur_sheet_txt{2:end,1};
+%         end
+%     end
+%     
+% end
+
 [xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
-for i=1:length(xls_filen)
+% for i=1:length(xls_filen)
+%     xls_filename=xls_filen{i};
+%     xls_full=fullfile(xls_path,xls_filename)
+%     [~,sheets{i},~]=xlsfinfo(xls_full)
+%  
+%     for j=1:length(sheets{i})
+%          [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
+%             for k=1:size(cur_sheet_txt,2)
+%                 if strfind(sheets{1,i}{1,j},'TnH')
+%                     [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
+%                     strgau_name_hor{1,k}=cur_sheet_txt{k,1}
+%                 elseif strfind(sheets{1,i}{1,j},'TnV')
+%                     [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
+%                     strgau_name_vert{1,k}=cur_sheet_txt{k,1};
+%                 end
+%             end
+%     end
+% end
+
+% 
+% for i=1:length(xls_filen)
+%     xls_filename=xls_filen{i};
+%     xls_full=fullfile(xls_path,xls_filename)
+%     [~,sheets{i},~]=xlsfinfo(xls_full)
+%     count_strgau=0;
+%     for l=1:length(sheets{i})
+%     [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,l});
+%     count_strgau=count_strgau+size(cur_sheet_txt,1)-1
+%     end
+%     for j=1:length(sheets{i})
+%          [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
+%             for k=2:count_strgau+1
+%                 if strfind(sheets{1,i}{1,j},'TnH')
+%                     %[~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,k});
+%                     strgau_name_hor{1,k}=cur_sheet_txt{,1}
+%                 elseif strfind(sheets{1,i}{1,j},'TnV')
+%                     [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,k});
+%                     strgau_name_vert{1,k}=cur_sheet_txt{k,1};
+%                 end
+%             end
+%     end
+% end
+
+%% read xls dms position data
+[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
+
+%how many xls files:
+count_xls=length(xls_filen);
+
+%how many sheets per xls:
+for i=1:count_xls
     xls_filename=xls_filen{i};
-    xls_full=fullfile(xls_path,xls_filename)
-    [~,sheets{i},~]=xlsfinfo(xls_full)
- 
-    for j=1:length(sheets{i})
-        if strfind(sheets{1,i}{1,j},'TnH')
-        [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
-        strgau_name_hor{i,j}=cur_sheet_txt{2:end,1}
-        elseif strfind(sheets{1,i}{1,j},'TnV')
-        [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
-        strgau_name_vert{i,j}=cur_sheet_txt{2:end,1};
-        end
+    xls_full=fullfile(xls_path,xls_filename);
+    [~,sheets{i},~]=xlsfinfo(xls_full);
+    count_sheets(i)=length(sheets{i});
+
+    %how many dms per sheet
+    count_strgau_comp(i)=0;
+    
+    for j=1:count_sheets(i)
+        
+        count_strgau_sheet(i,j)=0;
+        cur_sheet_name=sheets{1,i}{1,j};
+        %cur_sheet_name=sheets{1,j}{1,count_dms_per_sheet}
+        [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
+        count_strgau_comp(i)=count_strgau_comp(i)+size(cur_sheet_txt,1)-1
+        count_strgau_sheet(i,j)=count_strgau_sheet(i,j)+size(cur_sheet_txt,1)-1
+    end
+
+end
+
+for i=1:count_xls
+    xls_filename=xls_filen{i};
+    xls_full=fullfile(xls_path,xls_filename);
+    [~,sheets{i},~]=xlsfinfo(xls_full);
+    count_sheets(i)=length(sheets{i});
+    k=0;
+    for j=1:count_sheets(i)
+        cur_sheet_name=sheets{1,i}{1,j}
+        
+            %for k=1:count_strgau_comp(i)
+                for l=1:count_strgau_sheet(i,j)
+             k=k+1;   
+            if strfind(cur_sheet_name,'TnH')
+                [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
+                strgau_name_hor{1,k}=cur_sheet_txt{l+1,1}
+        
+            elseif strfind(cur_sheet_name,'TnV')
+                [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
+                strgau_name_vert{1,k}=cur_sheet_txt{l+1,1}
+                
+            else
+                disp('Horizontal or Vertical Straingauge not found');
+            end
+                end
+            %break
+           %end
+            
     end
     
 end
 
+
+% for i=1:count_xls
+%     xls_filename=xls_filen{i};
+%     xls_full=fullfile(xls_path,xls_filename);
+%     [~,sheets{i},~]=xlsfinfo(xls_full);
+%     count_sheets(i)=length(sheets{i});
+%     
+%     for j=1:count_sheets(i)
+%         cur_sheet_name=sheets{1,i}{1,j}
+%             for k=1:count_strgau_comp(i)
+%                 
+%             if strfind(cur_sheet_name,'TnH')
+%                 [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
+%                 strgau_name_hor{i,j}=cur_sheet_txt{count_strgau_sheet(i,j)+1,1}
+%         
+%             elseif strfind(cur_sheet_name,'TnV')
+%                 [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
+%                 strgau_name_vert{i,j}=cur_sheet_txt{count_strgau_sheet(i,j)+1,1}
+%                 
+%             else
+%                 disp('Horizontal or Vertical Straingauge not found');
+%             end
+%                 
+%             break 
+%             end
+%     end
+%     
+% end
+
+
+%%
 % for i=1:length(xls_filen)
 %    
 % end
@@ -173,7 +308,7 @@ end
 % lsline
 
 % plot(  
-% clear('except','cal_scale_beam','x_origin y_origin')
+
 
 
 %  varnames = {'cal_scale_beam','cal_scale_beam','y_origin','x_origin', 'res_hor_strauss'};
