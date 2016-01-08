@@ -8,7 +8,7 @@
         %place checkboxes and name them after DICfilen(i)
         for i=1:length(DICfilen); 
             f.cbh(i) = uicontrol(f.fig,'Style','checkbox','String',DICfilen(i), ...
-            'Value',1,'Position',[30 20*i 300 20]);
+            'Value',0,'Position',[30 20*i 300 20]);
         end
         
         % Place Button to Submit values 
