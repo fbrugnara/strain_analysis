@@ -107,7 +107,7 @@ close(waitb)
 %     
 % end
 
-[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
+%[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
 % for i=1:length(xls_filen)
 %     xls_filename=xls_filen{i};
 %     xls_full=fullfile(xls_path,xls_filename)
@@ -151,7 +151,8 @@ close(waitb)
 %     end
 % end
 
-%% read xls dms position data
+%% Evaluation of hor and vert straingauges 
+% read xls dms position data
 [xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
 
 %how many xls files:
@@ -255,38 +256,89 @@ end
 %     end
 % end
 
+%% coordinates in xls files converted from absolute cad-plan to dic panorama picture
 
-filename='/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls/DMShor_kor.xls';
-[~,sheets]=xlsfinfo(filename);
-for i=1:length(sheets)
-[num{1,i},txt{1,i},raw{1,i}]=xlsread(filename,sheets{1,i});
+%filename='/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls/DMShor_kor.xls';
+
+for i=1:count_xls
+filename=xls_filen{i};
+xls_full=fullfile(xls_path,filename);
+[~,sheets{i},~]=xlsfinfo(xls_full);
+[~,xls_filen_wo_ext,~]=fileparts(xls_full);
+for j=1:length(sheets{i})
+[num{1,j},txt{1,j},raw{1,j}]=xlsread(xls_full,sheets{1,i}{1,j});
 end
 
-for i=1:length(raw)
-    for j=2:size(raw{1,i},2)
-        for k=2:size(raw{1,i},1)
-            if j==2
-raw_px{1,i}{k,j}=raw{1,i}{k,j}*cal_scale_beam-(165*cal_scale_beam-x_origin);
+for k=1:length(raw)
+    for l=2:size(raw{1,k},2)
+        for m=2:size(raw{1,k},1)
+            if l==2
+raw_px.(xls_filen_wo_ext){1,k}{m,l}=raw{1,k}{m,l}*cal_scale_beam-(165*cal_scale_beam-x_origin);
 
             else 
-raw_px{1,i}{k,j}=abs(y_origin-raw{1,i}{k,j}*cal_scale_beam);
+raw_px.(xls_filen_wo_ext){1,k}{m,l}=abs(y_origin-raw{1,k}{m,l}*cal_scale_beam);
             end
         end
     end
 end
-
+clearvars raw txt num
+end
 %% Evaluation of Data Variant 1 Strauss fixed length of radius (20mm,15mm,10mm)
+
+% radius_width=1;
+% radius_length=[2*cal_scale_beam,1.5*cal_scale_beam,1.0*cal_scale_beam];
+% strgau_x=raw_px{1,1}{2,2}
+% strgau_y=raw_px{1,1}{2,3}
+% strgau_center=[strgau_x,strgau_y];
+% for i=1:length(radius_length)
+% radius{1,i}={'r',radius_width,radius_length(1,i)}
+% %radius={'r',radius_width,107.5056}
+% res_hor_strauss(i)=fieldextraction2(loadedframes,wframes_wo_ext,{'exx'},strgau_center,radius{1,i})
+% end
 
 radius_width=1;
 radius_length=[2*cal_scale_beam,1.5*cal_scale_beam,1.0*cal_scale_beam];
-strgau_x=raw_px{1,1}{2,2}
-strgau_y=raw_px{1,1}{2,3}
-strgau_center=[strgau_x,strgau_y];
-for i=1:length(radius_length)
-radius{1,i}={'r',radius_width,radius_length(1,i)}
-%radius={'r',radius_width,107.5056}
-res_hor_strauss(i)=fieldextraction2(loadedframes,wframes_wo_ext,{'exx'},strgau_center,radius{1,i})
+radius_name={'r20','r15','r10'};
+count_radii=length(radius_length);
+for i=1:length(xls_filen)
+    [~,filename,~]=fileparts(xls_filen{i});
+    
+    for j=1:count_sheets(i)
+        for k=2:count_strgau_sheet(i,j)+1
+            strgau_x.(filename)(k,j)=raw_px.(filename){1,j}{k,2}
+            strgau_y.(filename)(k,j)=raw_px.(filename){1,j}{k,3}
+            m=1;
+               % for l=1:count_radii
+                    if strfind(filename,'hor') >=1
+                            for l=1:count_radii
+                                cur_strgau_x=raw_px.(filename){1,j}{k,2};
+                                cur_strgau_y=raw_px.(filename){1,j}{k,3};
+                                radius{1,l}={'r',radius_width,radius_length(1,l)}
+                                strgau_center=[cur_strgau_x,cur_strgau_y];
+                                %m=m+1;
+                                res_hor_strauss.(wframes_wo_ext{1}).(strgau_name_hor{1,m}).(radius_name{l})=fieldextraction2(loadedframes,wframes_wo_ext,{'exx'},strgau_center,radius{1,l});
+                            end
+                            m=m+1;
+                    elseif strfind(filename,'vert') >=1
+                            for n=1:count_radii
+                                cur_strgau_x=raw_px.(filename){1,j}{k,2};
+                                cur_strgau_y=raw_px.(filename){1,j}{k,3};
+                                radius{1,n}={'r',radius_length(1,n),radius_width}
+                                strgau_center=[cur_strgau_x,cur_strgau_y];
+                                %m=m+1;
+                                res_vert_strauss.(wframes_wo_ext{1}).(strgau_name_vert{1,m}).(radius_name{n})=fieldextraction2(loadedframes,wframes_wo_ext,{'eyy'},strgau_center,radius{1,n});
+                            end
+                            m=m+1;
+                    else
+                        disp('Neither vert nor hor String found');
+                    end
+               % end
+        end
+    end
+
 end
+
+
 
 % % corr2(res_hor_strauss)
 % hold on
@@ -352,3 +404,6 @@ end
 % title(fileName)
 % t
 % end
+
+%% evaluating xls file 
+
