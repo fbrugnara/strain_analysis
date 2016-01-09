@@ -43,8 +43,8 @@ f = figure();
 ax=gca;
 imshow(fullfile(beam_scale_path,beam_scale_filen),'Parent',ax);
 [x_origin,y_origin]=ginput(1);
-x_origin=abs(x_origin);
-y_origin=abs(y_origin);
+x_origin=abs(ceil(x_origin));
+y_origin=abs(ceil(y_origin));
 %[x,y]=getpts(f);
 close(f);
 end
