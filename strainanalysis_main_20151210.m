@@ -160,46 +160,46 @@ end
 count_xls=length(xls_filen);
 
 %how many sheets per xls:
-for i=1:count_xls
-    xls_filename=xls_filen{i};
+for counter1_xls=1:count_xls
+    xls_filename=xls_filen{counter1_xls};
     xls_full=fullfile(xls_path,xls_filename);
-    [~,sheets{i},~]=xlsfinfo(xls_full);
-    count_sheets(i)=length(sheets{i});
+    [~,sheets{counter1_xls},~]=xlsfinfo(xls_full);
+    count_sheets(counter1_xls)=length(sheets{counter1_xls});
 
     %how many dms per sheet
-    count_strgau_comp(i)=0;
+    count_strgau_comp(counter1_xls)=0;
     
-    for j=1:count_sheets(i)
+    for counter1_sheets=1:count_sheets(counter1_xls)
         
-        count_strgau_sheet(i,j)=0;
-        cur_sheet_name=sheets{1,i}{1,j};
+        count_strgau_sheet(counter1_xls,counter1_sheets)=0;
+        cur_sheet_name=sheets{1,counter1_xls}{1,counter1_sheets};
         %cur_sheet_name=sheets{1,j}{1,count_dms_per_sheet}
         [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
-        count_strgau_comp(i)=count_strgau_comp(i)+size(cur_sheet_txt,1)-1
-        count_strgau_sheet(i,j)=count_strgau_sheet(i,j)+size(cur_sheet_txt,1)-1
+        count_strgau_comp(counter1_xls)=count_strgau_comp(counter1_xls)+size(cur_sheet_txt,1)-1
+        count_strgau_sheet(counter1_xls,counter1_sheets)=count_strgau_sheet(counter1_xls,counter1_sheets)+size(cur_sheet_txt,1)-1
     end
 
 end
 
-for i=1:count_xls
-    xls_filename=xls_filen{i};
+for counter2_xls=1:count_xls
+    xls_filename=xls_filen{counter2_xls};
     xls_full=fullfile(xls_path,xls_filename);
-    [~,sheets{i},~]=xlsfinfo(xls_full);
-    count_sheets(i)=length(sheets{i});
+    [~,sheets{counter2_xls},~]=xlsfinfo(xls_full);
+    count_sheets(counter2_xls)=length(sheets{counter2_xls});
     k=0;
-    for j=1:count_sheets(i)
-        cur_sheet_name=sheets{1,i}{1,j}
+    for counter2_sheets=1:count_sheets(counter2_xls)
+        cur_sheet_name=sheets{1,counter2_xls}{1,counter2_sheets}
         
             %for k=1:count_strgau_comp(i)
-                for l=1:count_strgau_sheet(i,j)
+                for counter1_strgau_sheet=1:count_strgau_sheet(counter2_xls,counter2_sheets)
              k=k+1;   
             if strfind(cur_sheet_name,'TnH')
                 [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
-                strgau_name_hor{1,k}=cur_sheet_txt{l+1,1}
+                strgau_name_hor{1,k}=cur_sheet_txt{counter1_strgau_sheet+1,1}
         
             elseif strfind(cur_sheet_name,'TnV')
                 [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
-                strgau_name_vert{1,k}=cur_sheet_txt{l+1,1}
+                strgau_name_vert{1,k}=cur_sheet_txt{counter1_strgau_sheet+1,1}
                 
             else
                 disp('Horizontal or Vertical Straingauge not found');
@@ -261,13 +261,13 @@ end
 
 %filename='/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls/DMShor_kor.xls';
 
-for i=1:count_xls
-filename=xls_filen{i};
+for counter3_xls=1:count_xls
+filename=xls_filen{counter3_xls};
 xls_full=fullfile(xls_path,filename);
-[~,sheets{i},~]=xlsfinfo(xls_full);
+[~,sheets{counter3_xls},~]=xlsfinfo(xls_full);
 [~,xls_filen_wo_ext,~]=fileparts(xls_full);
-for j=1:length(sheets{i})
-[num{1,j},txt{1,j},raw{1,j}]=xlsread(xls_full,sheets{1,i}{1,j});
+for counter2_sheets=1:length(sheets{counter3_xls})
+[num{1,counter2_sheets},txt{1,counter2_sheets},raw{1,counter2_sheets}]=xlsread(xls_full,sheets{1,counter3_xls}{1,counter2_sheets});
 end
 
 for k=1:length(raw)
