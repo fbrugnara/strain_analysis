@@ -59,12 +59,13 @@ chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
 %% Load frames
 lenChosenFrames=length(chosen_frames);
 %loadedframes=cell(1,lenChosenFrames);
-waitb = waitbar(0,'Please wait...');
+%waitb = waitbar(0,'Please wait...');
+tic
 for counter1_chosenframes = 1:lenChosenFrames
 loadedframes.(wframes_wo_ext{1,counter1_chosenframes})=load(chosen_frames{1,counter1_chosenframes});
 waitbar(counter1_chosenframes / lenChosenFrames);
-end
-close(waitb)
+cur_frame=wframes_wo_ext(counter1_chosenframes)
+%close(waitb)
 %% Default values for fieldextraction
 % which frames = first loaded frame
 % which fields = e_xx & e_yy
@@ -319,7 +320,7 @@ for counter4_xls=1:length(xls_filen)
                                 radius{1,count1_radii}={'r',radius_width,radius_length(1,count1_radii)}
                                 strgau_center=[cur_strgau_x,cur_strgau_y];
                                 %m=m+1;
-                                res_hor_strauss.(wframes_wo_ext{1}).(strgau_name_hor{1,counter2_strgau_names}).(radius_name{count1_radii})=fieldextraction2(loadedframes,wframes_wo_ext,{'exx'},strgau_center,radius{1,count1_radii});
+                                res_hor_strauss.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_hor{1,counter2_strgau_names}).(radius_name{count1_radii})=fieldextraction2(loadedframes,cur_frame,{'exx'},strgau_center,radius{1,count1_radii});
                             end
                             counter2_strgau_names=counter2_strgau_names+1;
                     elseif strfind(filename,'vert') >=1
@@ -329,7 +330,7 @@ for counter4_xls=1:length(xls_filen)
                                 radius{1,count2_radii}={'r',radius_length(1,count2_radii),radius_width}
                                 strgau_center=[cur_strgau_x,cur_strgau_y];
                                 %m=m+1;
-                                res_vert_strauss.(wframes_wo_ext{1}).(strgau_name_vert{1,counter2_strgau_names}).(radius_name{count2_radii})=fieldextraction2(loadedframes,wframes_wo_ext,{'eyy'},strgau_center,radius{1,count2_radii});
+                                res_vert_strauss.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_vert{1,counter2_strgau_names}).(radius_name{count2_radii})=fieldextraction2(loadedframes,cur_frame,{'eyy'},strgau_center,radius{1,count2_radii});
                             end
                             counter2_strgau_names=counter2_strgau_names+1;
                     else
@@ -342,9 +343,13 @@ for counter4_xls=1:length(xls_filen)
 end
 %% save results as .mat file
 mat_filen=fullfile(workingdir,'../09_results/',wframes);
-save(mat_filen{1},'res_hor_strauss','res_vert_strauss');
-
-
+save(mat_filen{counter1_chosenframes},'res_hor_strauss','res_vert_strauss');
+%varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_scale_beam','y_origin','x_origin','xls_filen','xls_path'};
+%clearvars('-except',varnames{:});
+varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_scale_beam','y_origin','x_origin','xls_filen','xls_path','res_hor_strauss','res_vert_strauss'};
+clearvars('-except',varnames{:});
+end
+toc
 % % corr2(res_hor_strauss)
 % hold on
 % figure
