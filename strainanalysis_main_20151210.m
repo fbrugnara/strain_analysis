@@ -22,8 +22,8 @@ workingdir=mfilename('fullpath');
 workingdir=fileparts(workingdir);
 
 %% Only run calibration if the variable cal_scale_beam does not exist
-if exist('cal_scale_beam','var') == 0
-    [cal_scale_beam,x_origin,y_origin]=scale_beam(workingdir);
+if exist('cal_scale_beam','var') == 0 && exist('cal_y_origin','var') && exist('cal_x_origin','var') == 0
+    [cal_scale_beam,cal_x_origin,cal_y_origin]=scale_beam(workingdir);
 end
 
 % %% Replaced by next section
@@ -57,22 +57,13 @@ chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
 % end
 
 %% Load frames
-%if 0==1
 lenChosenFrames=length(chosen_frames);
 %loadedframes=cell(1,lenChosenFrames);
-waitb = waitbar(0,'Please wait...');
-for i = 1:lenChosenFrames
-%loadedframes.(wframes_wo_ext{1,i})=load(chosen_frames{1,i});
- loadedframes.(wframes_wo_ext{1,i})=load(chosen_frames{1,i});
-waitbar(i / lenChosenFrames);
-end
-close(waitb)
-%end
 %waitb = waitbar(0,'Please wait...');
 tic
 for counter1_chosenframes = 1:lenChosenFrames
 loadedframes.(wframes_wo_ext{1,counter1_chosenframes})=load(chosen_frames{1,counter1_chosenframes});
-waitbar(counter1_chosenframes / lenChosenFrames);
+%waitbar(counter1_chosenframes / lenChosenFrames);
 cur_frame=wframes_wo_ext(counter1_chosenframes)
 %close(waitb)
 %% Default values for fieldextraction
@@ -284,10 +275,10 @@ for counter3_sheets=1:length(raw)
     for counter2_strgau_sheet=2:size(raw{1,counter3_sheets},2)
         for counter1_columns=2:size(raw{1,counter3_sheets},1)
             if counter2_strgau_sheet==2
-raw_px.(xls_filen_wo_ext){1,counter3_sheets}{counter1_columns,counter2_strgau_sheet}=raw{1,counter3_sheets}{counter1_columns,counter2_strgau_sheet}*cal_scale_beam-(165*cal_scale_beam-x_origin);
+raw_px.(xls_filen_wo_ext){1,counter3_sheets}{counter1_columns,counter2_strgau_sheet}=raw{1,counter3_sheets}{counter1_columns,counter2_strgau_sheet}*cal_scale_beam-(165*cal_scale_beam-cal_x_origin);
 
             else 
-raw_px.(xls_filen_wo_ext){1,counter3_sheets}{counter1_columns,counter2_strgau_sheet}=abs(y_origin-raw{1,counter3_sheets}{counter1_columns,counter2_strgau_sheet}*cal_scale_beam);
+raw_px.(xls_filen_wo_ext){1,counter3_sheets}{counter1_columns,counter2_strgau_sheet}=abs(cal_y_origin-raw{1,counter3_sheets}{counter1_columns,counter2_strgau_sheet}*cal_scale_beam);
             end
         end
     end
@@ -350,20 +341,12 @@ for counter4_xls=1:length(xls_filen)
     end
 
 end
-
-
-%% save results as .mat file
-mat_filen=fullfile(workingdir,'../09_results/',wframes);
-save(mat_filen{1},'res_hor_strauss','res_vert_strauss');
-% varnames = {'workingdir','chosen_frames','wframes_wo_ext','wframes','cal_scale_beam','cal_scale_beam','y_origin','x_origin','xls_filen','xls_path'};
-% clearvars('-except',varnames{:});
-%end
 %% save results as .mat file
 mat_filen=fullfile(workingdir,'../09_results/',wframes);
 save(mat_filen{counter1_chosenframes},'res_hor_strauss','res_vert_strauss');
 %varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_scale_beam','y_origin','x_origin','xls_filen','xls_path'};
 %clearvars('-except',varnames{:});
-varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_scale_beam','y_origin','x_origin','xls_filen','xls_path','res_hor_strauss','res_vert_strauss'};
+varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','xls_filen','xls_path','res_hor_strauss','res_vert_strauss'};
 clearvars('-except',varnames{:});
 end
 toc
