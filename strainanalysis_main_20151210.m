@@ -340,7 +340,9 @@ for counter4_xls=1:length(xls_filen)
     end
 
 end
-
+%% save results as .mat file
+mat_filen=fullfile(workingdir,'../09_results/',wframes);
+save(mat_filen{1},'res_hor_strauss','res_vert_strauss');
 
 
 % % corr2(res_hor_strauss)
