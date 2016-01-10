@@ -296,6 +296,8 @@ end
 % res_hor_strauss(i)=fieldextraction2(loadedframes,wframes_wo_ext,{'exx'},strgau_center,radius{1,i})
 % end
 
+%% get results of strauss purposed method (fixed radii of 10mm 15mm 20mm)
+
 radius_width=1;
 radius_length=[2*cal_scale_beam,1.5*cal_scale_beam,1.0*cal_scale_beam];
 radius_name={'r20','r15','r10'};
