@@ -304,12 +304,12 @@ radius_name={'r20','r15','r10'};
 count_radii=length(radius_length);
 for i=1:length(xls_filen)
     [~,filename,~]=fileparts(xls_filen{i});
-    
+    m=1;
     for j=1:count_sheets(i)
         for k=2:count_strgau_sheet(i,j)+1
             strgau_x.(filename)(k,j)=raw_px.(filename){1,j}{k,2}
             strgau_y.(filename)(k,j)=raw_px.(filename){1,j}{k,3}
-            m=1;
+            
                % for l=1:count_radii
                     if strfind(filename,'hor') >=1
                             for l=1:count_radii
