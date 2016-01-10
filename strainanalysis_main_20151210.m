@@ -153,8 +153,9 @@ close(waitb)
 
 %% Evaluation of hor and vert straingauges 
 % read xls dms position data
+if exist('xls_filen','var') && exist('xls_path','var') == 0
 [xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
-
+end
 %how many xls files:
 count_xls=length(xls_filen);
 
