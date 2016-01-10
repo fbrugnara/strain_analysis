@@ -57,14 +57,17 @@ chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
 % end
 
 %% Load frames
+%if 0==1
 lenChosenFrames=length(chosen_frames);
 %loadedframes=cell(1,lenChosenFrames);
 waitb = waitbar(0,'Please wait...');
 for i = 1:lenChosenFrames
-loadedframes.(wframes_wo_ext{1,i})=load(chosen_frames{1,i});
+%loadedframes.(wframes_wo_ext{1,i})=load(chosen_frames{1,i});
+ loadedframes.(wframes_wo_ext{1,i})=load(chosen_frames{1,i});
 waitbar(i / lenChosenFrames);
 end
 close(waitb)
+%end
 %% Default values for fieldextraction
 % which frames = first loaded frame
 % which fields = e_xx & e_yy
@@ -153,7 +156,7 @@ close(waitb)
 
 %% Evaluation of hor and vert straingauges 
 % read xls dms position data
-if exist('xls_filen','var') && exist('xls_path','var') == 0
+if exist('xls_filen','var') == 0 && exist('xls_path','var') == 0
 [xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
 end
 %how many xls files:
@@ -341,8 +344,12 @@ for i=1:length(xls_filen)
 
 end
 
-
-
+%% save results as .mat file
+mat_filen=fullfile(workingdir,'../09_results/',wframes);
+save(mat_filen{1},'res_hor_strauss','res_vert_strauss');
+% varnames = {'workingdir','chosen_frames','wframes_wo_ext','wframes','cal_scale_beam','cal_scale_beam','y_origin','x_origin','xls_filen','xls_path'};
+% clearvars('-except',varnames{:});
+%end
 % % corr2(res_hor_strauss)
 % hold on
 % figure
