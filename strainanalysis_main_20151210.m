@@ -342,7 +342,7 @@ for counter4_xls=1:length(xls_filen)
 
 end
 %% save results as .mat file
-mat_filen=fullfile(workingdir,'../09_results/',wframes);
+mat_filen=fullfile(workingdir,'../09_results/','reshor_strauss_',wframes);
 save(mat_filen{counter1_chosenframes},'res_hor_strauss','res_vert_strauss');
 %varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_scale_beam','y_origin','x_origin','xls_filen','xls_path'};
 %clearvars('-except',varnames{:});
