@@ -26,22 +26,6 @@ if exist('cal_scale_beam','var') == 0 || exist('cal_y_origin','var') && exist('c
     [cal_scale_beam,cal_x_origin,cal_y_origin]=scale_beam(workingdir);
 end
 
-% %% Replaced by next section
-% [DICfilen,DICpath]=uigetfile(fullfile(workingdir,'../04_StitchedFields','*.mat'),'Select .mat 04_StitchedFields','MultiSelect','on');
-%     if isequal(DICfilen, 0)
-%         disp('User selected Cancel')
-%         return;
-%     end
-%     
-%     %If only one .mat file is selected uigetfile returns a str.
-%     %and in the next for loop there is a reference to a cell array
-%     DICfilen = cellstr(DICfilen);
-%     
-%     for i = 1:length(DICfilen)
-%         disp(fullfile(DICpath, DICfilen{i}))
-%     end
-% %%gui to reduce data in frames
-% gui_red = figure('Visible','off','Position',[360,500,450,285]);
 
 %% Choose which Frames to use 
 dir_stitchedfields = fullfile(workingdir,'../04_StitchedFields','*.mat');
@@ -51,10 +35,7 @@ fieldnames_stitchedfields={contents_stitchedfields(:).name};
  [wframes,wframes_wo_ext,wframes_indices]=wframes_gui(fieldnames_stitchedfields);
 chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
     
-% %% Load the frames in to the workspace Replace by next section
-% for i= 1:length(DICfilen)
-% loadedDIC{i}=load(fullfile(DICpath,DICfilen{i}));
-% end
+
 
 %% Load frames
 lenChosenFrames=length(chosen_frames);
@@ -66,91 +47,6 @@ loadedframes.(wframes_wo_ext{1,counter1_chosenframes})=load(chosen_frames{1,coun
 %waitbar(counter1_chosenframes / lenChosenFrames);
 cur_frame=wframes_wo_ext(counter1_chosenframes)
 %close(waitb)
-%% Default values for fieldextraction
-% which frames = first loaded frame
-% which fields = e_xx & e_yy
-%strain gauge center strgau_center=(ypx,xpx)
-% radius = rectangle , length = 100px width =50px
-
-% %wframes[1,3,4]  
-%  wframes=[1,2];
-%     for i=1:length(wframes)
-%        [~,wframes_filen{1,i},~]=fileparts(DICfilen{1,wframes(i)})
-%    end
-
-%[wframes,wframes_indices]=wframes_gui(DICfilen);
-%wfields={'exx','eyy'};
-%strgau_center=(ypx,xpx);
-%strgau_center=[300,6040];
-%radius('r'/'c',width,length);
-%radius={'r',20,80};
-%result=fieldextraction(loadedDIC,wframes,wframes_filen,wfields,strgau_center,radius);
-%result=fieldextraction(loadedframes,wframes_wo_ext,wframes_wo_ext,wfields,strgau_center,radius);
-%result=fieldextraction2(loadedframes,wframes_wo_ext,wfields,strgau_center,radius);
-
-%% read xls dms position data
-% [xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
-% for i=1:length(xls_filen)
-%     xls_filename=xls_filen{i};
-%     xls_full=fullfile(xls_path,xls_filename)
-%     [~,sheets{i},~]=xlsfinfo(xls_full)
-%  
-%     for j=1:length(sheets{i})
-%         %load sheet before if 
-%         if strfind(sheets{1,i}{1,j},'TnH')
-%         [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
-%         strgau_name_hor{i,j}=cur_sheet_txt{2:end,1}
-%         elseif strfind(sheets{1,i}{1,j},'TnV')
-%         [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
-%         strgau_name_vert{i,j}=cur_sheet_txt{2:end,1};
-%         end
-%     end
-%     
-% end
-
-%[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
-% for i=1:length(xls_filen)
-%     xls_filename=xls_filen{i};
-%     xls_full=fullfile(xls_path,xls_filename)
-%     [~,sheets{i},~]=xlsfinfo(xls_full)
-%  
-%     for j=1:length(sheets{i})
-%          [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
-%             for k=1:size(cur_sheet_txt,2)
-%                 if strfind(sheets{1,i}{1,j},'TnH')
-%                     [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
-%                     strgau_name_hor{1,k}=cur_sheet_txt{k,1}
-%                 elseif strfind(sheets{1,i}{1,j},'TnV')
-%                     [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
-%                     strgau_name_vert{1,k}=cur_sheet_txt{k,1};
-%                 end
-%             end
-%     end
-% end
-
-% 
-% for i=1:length(xls_filen)
-%     xls_filename=xls_filen{i};
-%     xls_full=fullfile(xls_path,xls_filename)
-%     [~,sheets{i},~]=xlsfinfo(xls_full)
-%     count_strgau=0;
-%     for l=1:length(sheets{i})
-%     [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,l});
-%     count_strgau=count_strgau+size(cur_sheet_txt,1)-1
-%     end
-%     for j=1:length(sheets{i})
-%          [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,j});
-%             for k=2:count_strgau+1
-%                 if strfind(sheets{1,i}{1,j},'TnH')
-%                     %[~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,k});
-%                     strgau_name_hor{1,k}=cur_sheet_txt{,1}
-%                 elseif strfind(sheets{1,i}{1,j},'TnV')
-%                     [~,cur_sheet_txt,~]=xlsread(xls_full,sheets{i}{1,k});
-%                     strgau_name_vert{1,k}=cur_sheet_txt{k,1};
-%                 end
-%             end
-%     end
-% end
 
 %% Evaluation of hor and vert straingauges 
 % read xls dms position data
@@ -213,54 +109,7 @@ for counter2_xls=1:count_xls
     
 end
 
-
-% for i=1:count_xls
-%     xls_filename=xls_filen{i};
-%     xls_full=fullfile(xls_path,xls_filename);
-%     [~,sheets{i},~]=xlsfinfo(xls_full);
-%     count_sheets(i)=length(sheets{i});
-%     
-%     for j=1:count_sheets(i)
-%         cur_sheet_name=sheets{1,i}{1,j}
-%             for k=1:count_strgau_comp(i)
-%                 
-%             if strfind(cur_sheet_name,'TnH')
-%                 [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
-%                 strgau_name_hor{i,j}=cur_sheet_txt{count_strgau_sheet(i,j)+1,1}
-%         
-%             elseif strfind(cur_sheet_name,'TnV')
-%                 [~,cur_sheet_txt,~]=xlsread(xls_full,cur_sheet_name);
-%                 strgau_name_vert{i,j}=cur_sheet_txt{count_strgau_sheet(i,j)+1,1}
-%                 
-%             else
-%                 disp('Horizontal or Vertical Straingauge not found');
-%             end
-%                 
-%             break 
-%             end
-%     end
-%     
-% end
-
-
-%%
-% for i=1:length(xls_filen)
-%    
-% end
-
-% for i=1:length(sheets)
-%     if strfind(sheets{i},'TnV')==1
-%         strgau_align=
-%     elseif strfind(sheets{i},'TnH')==1
-%         
-%     else
-%         disp('komm oida fick dich welche daten schiebst ma rein!?');
-%     end
-% end
-
 %% coordinates in xls files converted from absolute cad-plan to dic panorama picture
-
-%filename='/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls/DMShor_kor.xls';
 
 for counter3_xls=1:count_xls
 filename=xls_filen{counter3_xls};
@@ -285,18 +134,6 @@ raw_px.(xls_filen_wo_ext){1,counter3_sheets}{counter1_columns,counter2_strgau_sh
 end
 clearvars raw txt num
 end
-%% Evaluation of Data Variant 1 Strauss fixed length of radius (20mm,15mm,10mm)
-
-% radius_width=1;
-% radius_length=[2*cal_scale_beam,1.5*cal_scale_beam,1.0*cal_scale_beam];
-% strgau_x=raw_px{1,1}{2,2}
-% strgau_y=raw_px{1,1}{2,3}
-% strgau_center=[strgau_x,strgau_y];
-% for i=1:length(radius_length)
-% radius{1,i}={'r',radius_width,radius_length(1,i)}
-% %radius={'r',radius_width,107.5056}
-% res_hor_strauss(i)=fieldextraction2(loadedframes,wframes_wo_ext,{'exx'},strgau_center,radius{1,i})
-% end
 
 %% get results of strauss purposed method (fixed radii of 10mm 15mm 20mm)
 
@@ -345,97 +182,36 @@ end
 result_filen=strcat('res_hor_strauss',wframes)
 mat_filen=fullfile(workingdir,'../09_results/','res_hor_strauss/',result_filen);
 save(mat_filen{counter1_chosenframes},'res_hor_strauss','res_vert_strauss');
-%varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_scale_beam','y_origin','x_origin','xls_filen','xls_path'};
-%clearvars('-except',varnames{:});
 varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','xls_filen','xls_path','res_hor_strauss','res_vert_strauss'};
 clearvars('-except',varnames{:});
 end
 toc
-% % corr2(res_hor_strauss)
-% hold on
-% figure
-% ax=subplot(1,1,1)
-% x=(1:1:size(res_hor_strauss(1).Beam3Processed_00000_s.exx(1,:),2));
-% plot(ax,x,res_hor_strauss(1).Beam3Processed_00000_s.exx(1,:),x,res_hor_strauss(1).Beam3Processed_00000_s.exx(2,:))
-%  lsline
-
-
-% %ax=subplot(1,1,1)
-% x=(1:1:size(res_hor_strauss(2).Beam3Processed_00364_s.exx(1,:),2));
-% scatter(ax,x,res_hor_strauss(2).Beam3Processed_00364_s.exx(1,:))
-%  lsline
-% 
-% %ax=subplot(1,1,1)
-% x=(1:1:size(res_hor_strauss(3).Beam3Processed_00364_s.exx(1,:),2));
-% scatter(ax,x,res_hor_strauss(3).Beam3Processed_00364_s.exx(1,:))
-% lsline
-
-% plot(  
-
-
-
-%  varnames = {'cal_scale_beam','cal_scale_beam','y_origin','x_origin', 'res_hor_strauss'};
-%  clearvars('-except',varnames{:});
-
-%  %% plot exx on TnD2 
-% [data_filen,data_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/09_results','*.mat'),'Select .mat for results','MultiSelect','on');
-% [beam_filen,beam_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/04_StitchedFields','*.mat'),'Select .mat for results','MultiSelect','on');
-% for i=1:length(data_filen)
-%       %without .mat    
-%       [~,data_filen_wo_ext{1,i},~]=fileparts(data_filen{1,i});
-%       [~,beam_filen_wo_ext{1,i},~]=fileparts(beam_filen{1,i});
-%       
-% end
-%  for t=1:length(data_filen)
-%     fileName=data_filen_wo_ext{t}
-%     fieldName=beam_filen_wo_ext{t}
-%     resultStruct.(fileName) = load(['/home/bowkatz/Documents/MATLAB/BachelorThesis/09_results/' data_filen{t}])
-%     
-%     hold on
-%     %ax1=subplot(2,1,1)
-%     %ax2=subplot(2,1,2)
-%     %if le(t,8) == 1
-%     %m = {'+','o','*','.','x','s','d','^','v','>','<','p','h'};
-%     %set(gca(), 'LineStyleOrder',m, 'ColorOrder',[0 0 0])
-%     plot(resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
-%     
-%     %else
-%        % plot(ax2,resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
-%     %end
-%  end
-%   hold off  
-%  
-%      legend(data_filen_wo_ext)
-% for t=1:length(data_filen);
-%     figure
-%     fileName=data_filen_wo_ext{t};
-%     fieldName=beam_filen_wo_ext{t};
-% plot(resultStruct.(fileName).res_hor_strauss(1).(fieldName).exx(1,:))
-% ylim([-2.5*10^(-3) 0.5*10^(-3)])
-% title(fileName)
-% t
-% end
-
-%% evaluating xls file 
 
 %% plot res hor strauss
-
+strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}))
+radii_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1}))
 count_frames=length(fieldnames(res_hor_strauss))
 count_strgau=length(fieldnames(res_hor_strauss.(wframes_wo_ext{1})))
-strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}))
+count_radii=length(fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1})))
+
 load_levels=[58,86,115,143,168,199,230,287,306];
 plot_res_hor_strauss=figure();
+position_plot=1;
 for counter_strgau=1:count_strgau
-for counter_frames=1:count_frames
-    subplot(count_strgau,1,counter_strgau)
+    for counter_radii=1:count_radii
+        for counter_frames=1:count_frames
+    
+    subplot(count_strgau,count_radii,position_plot)
     hold on
-    plot_title=strcat('Staingauge: ',strgau_name{counter_strgau,1},' horizontal',' r20');
+    plot_title=strcat('Staingauge: ',strgau_name{counter_strgau,1},' horizontal',radii_name{counter_radii,1});
     title(plot_title)
     xlabel('Pixel [px]')
     ylabel('exx [-]')
     legend_entry{counter_frames}=strcat('Loadlevel: ',num2str(load_levels(counter_frames)),' kN');
 
-    plot(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).r20.exx(1,:))
+    plot(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:))
+        end
+        position_plot=position_plot+1;
 end
 legend_plot_res_hor_strauss=legend(legend_entry);
 legend_plot_res_hor_strauss.Location='bestoutside';
@@ -444,27 +220,37 @@ legend_plot_res_hor_strauss.EdgeColor='white';
 end
 hold off
 
+strgau_name=fieldnames(res_vert_strauss.(wframes_wo_ext{1}))
+radii_name=fieldnames(res_vert_strauss.(wframes_wo_ext{1}).(strgau_name{1}))
 count_frames=length(fieldnames(res_vert_strauss))
 count_strgau=length(fieldnames(res_vert_strauss.(wframes_wo_ext{1})))
-strgau_name=fieldnames(res_vert_strauss.(wframes_wo_ext{1}))
+count_radii=length(fieldnames(res_vert_strauss.(wframes_wo_ext{1}).(strgau_name{1})))
+
 load_levels=[58,86,115,143,168,199,230,287,306];
 plot_res_vert_strauss=figure();
+
+position_plot=1;
 for counter_strgau=1:count_strgau
+    for counter_radii=1:count_radii
 for counter_frames=1:count_frames
-    subplot(count_strgau,1,counter_strgau)
+    subplot(count_strgau,count_radii,position_plot)
     hold on
-    plot_title=strcat('Staingauge: ',strgau_name{counter_strgau,1},' vertical',' r20');
+    plot_title=strcat('Staingauge: ',strgau_name{counter_strgau,1},' vertical',radii_name{counter_radii,1});
     title(plot_title)
     xlabel('Pixel [px]')
     ylabel('eyy [-]')
     legend_entry{counter_frames}=strcat('Loadlevel: ',num2str(load_levels(counter_frames)),' kN');
 
-    plot(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).r20.eyy(:,1))
+    plot(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1))
 end
+            position_plot=position_plot+1;
+
+    end
 legend_plot_res_vert_strauss=legend(legend_entry);
 legend_plot_res_vert_strauss.Location='bestoutside';
 legend_plot_res_vert_strauss.Box='on';
 legend_plot_res_vert_strauss.EdgeColor='white';
 end
+
 
 
