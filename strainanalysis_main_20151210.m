@@ -418,3 +418,53 @@ toc
 
 %% evaluating xls file 
 
+%% plot res hor strauss
+
+count_frames=length(fieldnames(res_hor_strauss))
+count_strgau=length(fieldnames(res_hor_strauss.(wframes_wo_ext{1})))
+strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}))
+load_levels=[58,86,115,143,168,199,230,287,306];
+plot_res_hor_strauss=figure();
+for counter_strgau=1:count_strgau
+for counter_frames=1:count_frames
+    subplot(count_strgau,1,counter_strgau)
+    hold on
+    plot_title=strcat('Staingauge: ',strgau_name{counter_strgau,1},' horizontal',' r20');
+    title(plot_title)
+    xlabel('Pixel [px]')
+    ylabel('exx [-]')
+    legend_entry{counter_frames}=strcat('Loadlevel: ',num2str(load_levels(counter_frames)),' kN');
+
+    plot(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).r20.exx(1,:))
+end
+legend_plot_res_hor_strauss=legend(legend_entry);
+legend_plot_res_hor_strauss.Location='bestoutside';
+legend_plot_res_hor_strauss.Box='on';
+legend_plot_res_hor_strauss.EdgeColor='white';
+end
+hold off
+
+count_frames=length(fieldnames(res_vert_strauss))
+count_strgau=length(fieldnames(res_vert_strauss.(wframes_wo_ext{1})))
+strgau_name=fieldnames(res_vert_strauss.(wframes_wo_ext{1}))
+load_levels=[58,86,115,143,168,199,230,287,306];
+plot_res_vert_strauss=figure();
+for counter_strgau=1:count_strgau
+for counter_frames=1:count_frames
+    subplot(count_strgau,1,counter_strgau)
+    hold on
+    plot_title=strcat('Staingauge: ',strgau_name{counter_strgau,1},' vertical',' r20');
+    title(plot_title)
+    xlabel('Pixel [px]')
+    ylabel('eyy [-]')
+    legend_entry{counter_frames}=strcat('Loadlevel: ',num2str(load_levels(counter_frames)),' kN');
+
+    plot(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).r20.eyy(:,1))
+end
+legend_plot_res_vert_strauss=legend(legend_entry);
+legend_plot_res_vert_strauss.Location='bestoutside';
+legend_plot_res_vert_strauss.Box='on';
+legend_plot_res_vert_strauss.EdgeColor='white';
+end
+
+
