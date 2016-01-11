@@ -22,7 +22,7 @@ workingdir=mfilename('fullpath');
 workingdir=fileparts(workingdir);
 
 %% Only run calibration if the variable cal_scale_beam does not exist
-if exist('cal_scale_beam','var') == 0 && exist('cal_y_origin','var') && exist('cal_x_origin','var') == 0
+if exist('cal_scale_beam','var') == 0 || exist('cal_y_origin','var') && exist('cal_x_origin','var') == 0
     [cal_scale_beam,cal_x_origin,cal_y_origin]=scale_beam(workingdir);
 end
 
@@ -154,7 +154,7 @@ cur_frame=wframes_wo_ext(counter1_chosenframes)
 
 %% Evaluation of hor and vert straingauges 
 % read xls dms position data
-if exist('xls_filen','var') == 0 && exist('xls_path','var') == 0
+if exist('xls_filen','var') == 0 || exist('xls_path','var') == 0
 [xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
 end
 %how many xls files:
@@ -342,7 +342,8 @@ for counter4_xls=1:length(xls_filen)
 
 end
 %% save results as .mat file
-mat_filen=fullfile(workingdir,'../09_results/','reshor_strauss_',wframes);
+result_filen=strcat('res_hor_strauss',wframes)
+mat_filen=fullfile(workingdir,'../09_results/','res_hor_strauss/',result_filen);
 save(mat_filen{counter1_chosenframes},'res_hor_strauss','res_vert_strauss');
 %varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_scale_beam','y_origin','x_origin','xls_filen','xls_path'};
 %clearvars('-except',varnames{:});
