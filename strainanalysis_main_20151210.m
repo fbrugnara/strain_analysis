@@ -25,7 +25,7 @@ workingdir=fileparts(workingdir);
 
 %% Only run calibration if the variable cal_scale_beam does not exist
 if exist('cal_scale_beam','var') == 0 || exist('cal_y_origin','var') == 0 || exist('cal_x_origin','var') == 0
-    [cal_scale_beam,cal_x_origin,cal_y_origin]=scale_beam(workingdir);
+    [cal_scale_beam,cal_x_origin,cal_y_origin,cal_height_beam]=scale_beam(workingdir);
 end
 
 
@@ -143,8 +143,8 @@ for counter4_xls=1:length(xls_filen)
     counter2_strgau_names=1;
     for counter4_sheets=1:count_sheets(counter4_xls)
         for counter3_strgau_sheet=2:count_strgau_sheet(counter4_xls,counter4_sheets)+1
-            strgau_x.(filename)(counter3_strgau_sheet,counter4_sheets)=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,2};
-            strgau_y.(filename)(counter3_strgau_sheet,counter4_sheets)=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,3};
+            %strgau_x.(filename)(counter3_strgau_sheet,counter4_sheets)=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,2};
+            %strgau_y.(filename)(counter3_strgau_sheet,counter4_sheets)=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,3};
             
                % for l=1:count_radii
                     if strfind(filename,'hor') >=1
@@ -179,22 +179,56 @@ end
 result_filen=strcat('res_hor_strauss',wframes);
 mat_filen=fullfile(workingdir,'../09_results/','res_hor_strauss/',result_filen);
 save(mat_filen{counter1_chosenframes},'res_hor_strauss','res_vert_strauss');
-varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert'};
+
+
+%% Calculate max radii from the different dms to the border of the beam
+max_radius_strgau=max_radius(loadedframes,raw_px,cal_height_beam,xls_filen,count_sheets,count_strgau_sheet,strgau_name_hor,strgau_name_vert,cur_frame,cal_scale_beam)
+
+
+%% get results of castillo purposed method (max radius at correlation of .7)
+for counter4_xls=1:length(xls_filen)
+    [~,filename,~]=fileparts(xls_filen{counter4_xls});
+    counter2_strgau_names=1;
+    radius{1,count1_radii}={'r',radius_width,radius_length(1,count1_radii)};
+    for counter4_sheets=1:count_sheets(counter4_xls)
+        for counter3_strgau_sheet=2:count_strgau_sheet(counter4_xls,counter4_sheets)+1
+           
+                    if strfind(filename,'hor') >=1
+                            if max_radius_strgau.hor.(strgau_name_hor{counter2_strgau_names}).x > max_radius_strgau.hor.(strgau_name_hor{counter2_strgau_names}).y
+                                cur_max_radius=max_radius_strgau.hor.(strgau_name_hor{counter2_strgau_names}).y;
+                            else
+                                cur_max_radius=max_radius_strgau.hor.(strgau_name_hor{counter2_strgau_names}).x;
+                            end
+                            cur_strgau_x=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,2};
+                            cur_strgau_y=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,3};
+                            strgau_center=[cur_strgau_x,cur_strgau_y];
+                            radius={'r',cur_max_radius,cur_max_radius}
+                            exx_max_radius=fieldextraction2(loadedframes,cur_frame,{'exx'},strgau_center,radius);
+                            mean_exx_max_radius=mean2(exx_max_radius)
+                            cor=corr2(mean_exx_max_radius,cur_max_radius)
+                            counter2_strgau_names=counter2_strgau_names+1;
+                    elseif strfind(filename,'vert') >=1
+                            
+                            counter2_strgau_names=counter2_strgau_names+1;
+                    else
+                        disp('Neither vert nor hor String found');
+                    end
+        end
+    end
+
+end
+
+
+
+
+varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius'};
 clearvars('-except',varnames{:});
 end
 toc
 
-
-%% get results of castillo purposed method (max radius at correlation of .7)
-%method_castillo(loadedframes,raw_px)
-
-
-
 end
 
 
-
-%max radius in x and y direction
 %% plot res hor strauss exx/eyy for each pixel each straingauge each radius
 
 strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}));
@@ -261,10 +295,9 @@ legend_plot_res_vert_strauss.Box='on';
 legend_plot_res_vert_strauss.EdgeColor='white';
 end
 
+
 %% Mean of exx/eyy and corresponding radii per loadlevel for each straingauge position
-
 % horziontal straingauges
-
 strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}));
 radii_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1}));
 count_frames=length(fieldnames(res_hor_strauss));
