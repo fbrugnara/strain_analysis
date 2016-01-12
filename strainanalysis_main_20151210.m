@@ -32,19 +32,11 @@ end
 %% Choose which Frames to use 
 dir_stitchedfields = fullfile(workingdir,'../04_StitchedFields','*.mat');
 contents_stitchedfields=dir(dir_stitchedfields);
-if exist('res_hor_strauss','var') == 0 || exist('res_vert_strauss','var') == 0
+if exist('res_hor_strauss','var') == 0 || exist('res_vert_strauss','var') == 0 || exist('res_hor_castillo','var') == 0 || exist('res_vert_castillo','var') == 0
 fieldnames_stitchedfields={contents_stitchedfields(:).name};
  [wframes,wframes_wo_ext,wframes_indices]=wframes_gui(fieldnames_stitchedfields);
 chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
     
-
-%% Load frames
-lenChosenFrames=length(chosen_frames);
-tic
-for counter1_chosenframes = 1:lenChosenFrames
-loadedframes.(wframes_wo_ext{1,counter1_chosenframes})=load(chosen_frames{1,counter1_chosenframes});
-cur_frame=wframes_wo_ext(counter1_chosenframes);
-
 
 %% Evaluation of hor and vert straingauges 
 % read xls dms position data
@@ -132,6 +124,14 @@ end
 clearvars raw txt num
 end
 
+%% Load frames
+lenChosenFrames=length(chosen_frames);
+tic
+for counter1_chosenframes = 1:lenChosenFrames
+loadedframes.(wframes_wo_ext{1,counter1_chosenframes})=load(chosen_frames{1,counter1_chosenframes});
+cur_frame=wframes_wo_ext(counter1_chosenframes);
+
+
 %% get results of strauss purposed method (fixed radii of 10mm 15mm 20mm)
 
 radius_width=1;
@@ -179,11 +179,22 @@ end
 result_filen=strcat('res_hor_strauss',wframes);
 mat_filen=fullfile(workingdir,'../09_results/','res_hor_strauss/',result_filen);
 save(mat_filen{counter1_chosenframes},'res_hor_strauss','res_vert_strauss');
-varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','xls_filen','xls_path','res_hor_strauss','res_vert_strauss'};
+varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert'};
 clearvars('-except',varnames{:});
 end
 toc
+
+
+%% get results of castillo purposed method (max radius at correlation of .7)
+%method_castillo(loadedframes,raw_px)
+
+
+
 end
+
+
+
+%max radius in x and y direction
 %% plot res hor strauss exx/eyy for each pixel each straingauge each radius
 
 strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}));
@@ -272,7 +283,7 @@ for counter_strgau=1:count_strgau
             xlabel('loadlevels');
             ylabel('mean of exx [-]');
             legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
-            mean_strain(counter_frames,counter_radii,counter_strgau)=mean(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:))
+            mean_strain(counter_frames,counter_radii,counter_strgau)=mean(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
             %plot(mean_strain(counter_frames))
         end
@@ -306,7 +317,7 @@ for counter_strgau=1:count_strgau
             xlabel('loadlevels');
             ylabel('mean of eyy [-]');
             legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
-            mean_strain(counter_frames,counter_radii,counter_strgau)=mean(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1))
+            mean_strain(counter_frames,counter_radii,counter_strgau)=mean(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
         end
         plot(mean_strain(:,counter_radii,counter_strgau))
@@ -318,6 +329,11 @@ legend_plot_res_vert_strauss.Location='bestoutside';
 legend_plot_res_vert_strauss.Box='on';
 legend_plot_res_vert_strauss.EdgeColor='white';
 end
+
+
+
+
+
 
 
 
