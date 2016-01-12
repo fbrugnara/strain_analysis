@@ -22,7 +22,7 @@ workingdir=mfilename('fullpath');
 workingdir=fileparts(workingdir);
 
 %% Only run calibration if the variable cal_scale_beam does not exist
-if exist('cal_scale_beam','var') == 0 || exist('cal_y_origin','var') && exist('cal_x_origin','var') == 0
+if exist('cal_scale_beam','var') == 0 || exist('cal_y_origin','var') == 0 || exist('cal_x_origin','var') == 0
     [cal_scale_beam,cal_x_origin,cal_y_origin]=scale_beam(workingdir);
 end
 
@@ -30,7 +30,7 @@ end
 %% Choose which Frames to use 
 dir_stitchedfields = fullfile(workingdir,'../04_StitchedFields','*.mat');
 contents_stitchedfields=dir(dir_stitchedfields);
-
+if exist('res_hor_strauss','var') == 0 || exist('res_vert_strauss','var') == 0
 fieldnames_stitchedfields={contents_stitchedfields(:).name};
  [wframes,wframes_wo_ext,wframes_indices]=wframes_gui(fieldnames_stitchedfields);
 chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
@@ -186,8 +186,9 @@ varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenCho
 clearvars('-except',varnames{:});
 end
 toc
+end
+%% plot res hor strauss exx/eyy for each pixel each straingauge each radius
 
-%% plot res hor strauss
 strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}))
 radii_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1}))
 count_frames=length(fieldnames(res_hor_strauss))
@@ -203,7 +204,7 @@ for counter_strgau=1:count_strgau
     
     subplot(count_strgau,count_radii,position_plot)
     hold on
-    plot_title=strcat('Staingauge: ',strgau_name{counter_strgau,1},' horizontal',radii_name{counter_radii,1});
+    plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' horizontal ',radii_name{counter_radii,1});
     title(plot_title)
     xlabel('Pixel [px]')
     ylabel('exx [-]')
@@ -235,7 +236,7 @@ for counter_strgau=1:count_strgau
 for counter_frames=1:count_frames
     subplot(count_strgau,count_radii,position_plot)
     hold on
-    plot_title=strcat('Staingauge: ',strgau_name{counter_strgau,1},' vertical',radii_name{counter_radii,1});
+    plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' vertical ',radii_name{counter_radii,1});
     title(plot_title)
     xlabel('Pixel [px]')
     ylabel('eyy [-]')
@@ -251,6 +252,78 @@ legend_plot_res_vert_strauss.Location='bestoutside';
 legend_plot_res_vert_strauss.Box='on';
 legend_plot_res_vert_strauss.EdgeColor='white';
 end
+
+%% Mean of exx/eyy and corresponding radii per loadlevel for each straingauge position
+
+% horziontal straingauges
+
+strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}))
+radii_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1}))
+count_frames=length(fieldnames(res_hor_strauss))
+count_strgau=length(fieldnames(res_hor_strauss.(wframes_wo_ext{1})))
+count_radii=length(fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1})))
+plot_res_hor_strauss_a=figure();
+
+position_plot=1;
+for counter_strgau=1:count_strgau
+    for counter_radii=1:count_radii
+        for counter_frames=1:count_frames
+            subplot(count_strgau,1,position_plot)
+            hold on
+            plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' horizontal ');
+            title(plot_title)
+            xlabel('loadlevels')
+            ylabel('mean of exx [-]')
+            legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
+            mean_strain(counter_frames,counter_radii,counter_strgau)=mean(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:))
+            str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
+            %plot(mean_strain(counter_frames))
+        end
+        plot(mean_strain(:,counter_radii,counter_strgau))
+        set(gca, 'XTickLabel',str_loadlevels, 'XTick',1:numel(str_loadlevels),'XTickLabelRotation',45)
+    end
+    position_plot=position_plot+1;
+    legend_plot_res_hor_strauss=legend(legend_entry);
+legend_plot_res_hor_strauss.Location='bestoutside';
+legend_plot_res_hor_strauss.Box='on';
+legend_plot_res_hor_strauss.EdgeColor='white';
+end
+
+% vertical straingauges
+
+strgau_name=fieldnames(res_vert_strauss.(wframes_wo_ext{1}))
+radii_name=fieldnames(res_vert_strauss.(wframes_wo_ext{1}).(strgau_name{1}))
+count_frames=length(fieldnames(res_vert_strauss))
+count_strgau=length(fieldnames(res_vert_strauss.(wframes_wo_ext{1})))
+count_radii=length(fieldnames(res_vert_strauss.(wframes_wo_ext{1}).(strgau_name{1})))
+plot_res_vert_strauss_a=figure();
+
+position_plot=1;
+for counter_strgau=1:count_strgau
+    for counter_radii=1:count_radii
+        for counter_frames=1:count_frames
+            subplot(count_strgau,1,position_plot)
+            hold on
+            plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' vertical ');
+            title(plot_title)
+            xlabel('loadlevels')
+            ylabel('mean of eyy [-]')
+            legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
+            mean_strain(counter_frames,counter_radii,counter_strgau)=mean(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1))
+            str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
+            %plot(mean_strain(counter_frames))
+        end
+        plot(mean_strain(:,counter_radii,counter_strgau))
+        set(gca, 'XTickLabel',str_loadlevels, 'XTick',1:numel(str_loadlevels),'XTickLabelRotation',45)
+    end
+    position_plot=position_plot+1;
+    legend_plot_res_vert_strauss=legend(legend_entry);
+legend_plot_res_vert_strauss.Location='bestoutside';
+legend_plot_res_vert_strauss.Box='on';
+legend_plot_res_vert_strauss.EdgeColor='white';
+end
+
+
 
 
 
