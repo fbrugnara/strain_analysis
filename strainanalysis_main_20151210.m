@@ -189,7 +189,7 @@ max_radius_strgau=max_radius(loadedframes,raw_px,cal_height_beam,xls_filen,count
 for counter4_xls=1:length(xls_filen)
     [~,filename,~]=fileparts(xls_filen{counter4_xls});
     counter2_strgau_names=1;
-    radius{1,count1_radii}={'r',radius_width,radius_length(1,count1_radii)};
+    %radius{1,count1_radii}={'r',radius_width,radius_length(1,count1_radii)};
     for counter4_sheets=1:count_sheets(counter4_xls)
         for counter3_strgau_sheet=2:count_strgau_sheet(counter4_xls,counter4_sheets)+1
            
@@ -199,18 +199,36 @@ for counter4_xls=1:length(xls_filen)
                             cur_strgau_y=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,3};
                             strgau_center=[cur_strgau_x,cur_strgau_y];
                             stepsize=20
-                            count_stepsize=floor(max_radius_strgau.hor.(strgau_name(counter2_strgau_names)).max/stepsize)
+                            count_stepsize=floor(max_radius_strgau.hor.(strgau_name_hor{counter2_strgau_names}).max/stepsize)
                             counter_stepsize_iteration=1;
-                            for counter_stepsize=stepsize:count_stepsize
+                            for counter_stepsize=1:count_stepsize
                                 cur_max_radius=stepsize*counter_stepsize
                                 radius={'r',cur_max_radius,cur_max_radius}
-                                res_hor_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name{counter2_strgau_names}).exx{counter_stepsize_iteration,1}=fieldextraction2(loadedframes,cur_frame,{'exx'},strgau_center,radius);
-                                res_hor_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name{counter2_strgau_names}).mean{counter_stepsize_iteration,1}=mean2(res_hor_pablo.(strgau_name{counter2_strgau_names}).exx{counter_stepsize_iteration,1})
+                                res_hor_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_hor{counter2_strgau_names}).exx{counter_stepsize_iteration,1}=fieldextraction2(loadedframes,cur_frame,{'exx'},strgau_center,radius);
+                                res_hor_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_hor{counter2_strgau_names}).mean{counter_stepsize_iteration,1}=mean2(res_hor_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_hor{counter2_strgau_names}).exx{counter_stepsize_iteration,1}.exx);
+                                res_hor_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_hor{counter2_strgau_names}).radius{counter_stepsize_iteration,1}=cur_max_radius;
+                                counter_stepsize_iteration=counter_stepsize_iteration+1;
+
                             %cor=corr2(mean_exx_max_radius,cur_max_radius)
                             end
                             counter2_strgau_names=counter2_strgau_names+1;
-                            counter_stepsize_iteration=counter_stepsize_iteration+1;
                     elseif strfind(filename,'vert') >=1
+                            cur_strgau_x=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,2};
+                            cur_strgau_y=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,3};
+                            strgau_center=[cur_strgau_x,cur_strgau_y];
+                            stepsize=20
+                            count_stepsize=floor(max_radius_strgau.vert.(strgau_name_vert{counter2_strgau_names}).max/stepsize)
+                            counter_stepsize_iteration=1;
+                            for counter_stepsize=1:count_stepsize
+                                cur_max_radius=stepsize*counter_stepsize
+                                radius={'r',cur_max_radius,cur_max_radius}
+                                res_vert_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_vert{counter2_strgau_names}).eyy{counter_stepsize_iteration,1}=fieldextraction2(loadedframes,cur_frame,{'eyy'},strgau_center,radius);
+                                res_vert_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_vert{counter2_strgau_names}).mean{counter_stepsize_iteration,1}=mean2(res_vert_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_vert{counter2_strgau_names}).eyy{counter_stepsize_iteration,1}.eyy)
+                                res_vert_pablo.(wframes_wo_ext{1,counter1_chosenframes}).(strgau_name_vert{counter2_strgau_names}).radius{counter_stepsize_iteration,1}=cur_max_radius;
+                                %cor=corr2(mean_exx_max_radius,cur_max_radius)
+                                counter_stepsize_iteration=counter_stepsize_iteration+1;
+
+                            end
                             
                             counter2_strgau_names=counter2_strgau_names+1;
                     else
@@ -224,12 +242,14 @@ end
 
 
 
-varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius_strgau'};
+varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius_strgau','res_hor_pablo','res_vert_pablo'};
 clearvars('-except',varnames{:});
 end
 toc
 
 end
+
+
 
 
 %% plot res hor strauss exx/eyy for each pixel each straingauge each radius
