@@ -1,3 +1,4 @@
+if 0==1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                     .--,                      
 %     .-''-,--.                                   .--,-``-.          :   /\                     
@@ -249,9 +250,38 @@ toc
 
 end
 
+end
 
+%% evaluate the correlation between radii and mean value of exx/eyy of the area corresponding to the position of the straingauges
 
+count_frames=length(chosen_frames)
+for counter_frames=1:count_frames
+    count_strgau=size(fieldnames(res_hor_pablo.(wframes_wo_ext{counter_frames})),1)
+    for counter_strgau=1:count_strgau
+        count_radii_mean=size(res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean,1)
+        for counter_radii_mean=1:count_radii_mean
+            mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean{1,counter_radii_mean}=res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean(1:counter_radii_mean,1)
+            mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radii{1,counter_radii_mean}=res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radius(1:counter_radii_mean,1)
+        end
+    end
+end
 
+count_frames=length(chosen_frames)
+for counter_frames=1:count_frames
+    count_strgau=size(fieldnames(res_hor_pablo.(wframes_wo_ext{counter_frames})),1);
+    for counter_strgau=1:count_strgau
+        count_radii_mean=size(res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean,1);
+        for counter_radii_mean=1:count_radii_mean
+A=cell2mat(mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean{1,counter_radii_mean});
+B=cell2mat(mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radii{1,counter_radii_mean});
+C=gpuArray(A);
+D=gpuArray(B);
+figure()
+scatter(A,B)
+mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).corr=corr2(C,D);
+        end
+    end
+end
 %% plot res hor strauss exx/eyy for each pixel each straingauge each radius
 
 strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}));
