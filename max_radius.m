@@ -34,6 +34,14 @@ for counter4_xls=1:length(xls_filen)
                             else
                                 max_radius.hor.(strgau_name_hor{counter2_strgau_names}).y=floor(max_radius_o.hor.(strgau_name_hor{counter2_strgau_names}).y)
                             end
+                            
+                            if max_radius.hor.(strgau_name_hor{counter2_strgau_names}).x > max_radius.hor.(strgau_name_hor{counter2_strgau_names}).y
+                               max_radius.hor.(strgau_name_hor{counter2_strgau_names}).max=max_radius.hor.(strgau_name_hor{counter2_strgau_names}).y;
+                            else
+                                max_radius.hor.(strgau_name_hor{counter2_strgau_names}).max=max_radius.hor.(strgau_name_hor{counter2_strgau_names}).x;
+                            end
+                            
+                            
                             counter2_strgau_names=counter2_strgau_names+1;
                     elseif strfind(filename,'vert') >=1
                            max_radius_l.vert.(strgau_name_vert{counter2_strgau_names}).x=abs(raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,2}-1);
@@ -47,7 +55,7 @@ for counter4_xls=1:length(xls_filen)
                             else
                                 max_radius.vert.(strgau_name_vert{counter2_strgau_names}).x = floor(max_radius_l.vert.(strgau_name_vert{counter2_strgau_names}).x)
                                 disp('Abstände sind gleich (cmon dude)');
-                            end
+                         end
                             
                             
                             max_radius_o.vert.(strgau_name_vert{counter2_strgau_names}).y=raw_px.(filename){1,counter4_sheets}{counter3_strgau_sheet,3};
@@ -60,11 +68,19 @@ for counter4_xls=1:length(xls_filen)
                             else
                                 max_radius.vert.(strgau_name_vert{counter2_strgau_names}).y=floor(max_radius_o.vert.(strgau_name_vert{counter2_strgau_names}).y)
                             end
+                            
+                            if max_radius.vert.(strgau_name_vert{counter2_strgau_names}).x > max_radius.vert.(strgau_name_vert{counter2_strgau_names}).y
+                               max_radius.vert.(strgau_name_vert{counter2_strgau_names}).max=max_radius.vert.(strgau_name_vert{counter2_strgau_names}).y;
+                            else
+                                max_radius.vert.(strgau_name_vert{counter2_strgau_names}).max=max_radius.vert.(strgau_name_vert{counter2_strgau_names}).x;
+                            end
+                            
                             counter2_strgau_names=counter2_strgau_names+1;
                     else
                         disp('Neither vert nor hor String found');
                     end
         end
+        
     end
 
 end
