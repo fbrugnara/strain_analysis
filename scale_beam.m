@@ -1,4 +1,4 @@
-function [scale,x_origin,y_origin] = scale_beam( workingdir )
+function [scale,x_origin,y_origin,height_beam] = scale_beam( workingdir )
 %SCALE_BEAM Summary of this function goes here
 %   Detailed explanation goes here
 instruction=msgbox({'Calibration:' 'Please put in the height of the object and choose a calibration image.'});
