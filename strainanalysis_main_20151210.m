@@ -1,4 +1,4 @@
-if 0==1
+%if 0==1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                     .--,                      
 %     .-''-,--.                                   .--,-``-.          :   /\                     
@@ -250,7 +250,7 @@ toc
 
 end
 
-end
+%end
 
 %% evaluate the correlation between radii and mean value of exx/eyy of the area corresponding to the position of the straingauges
 
@@ -274,14 +274,18 @@ for counter_frames=1:count_frames
         for counter_radii_mean=1:count_radii_mean
 A=cell2mat(mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean{1,counter_radii_mean});
 B=cell2mat(mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radii{1,counter_radii_mean});
-C=gpuArray(A);
-D=gpuArray(B);
-figure()
-scatter(A,B)
-mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).corr=corr2(C,D);
+%C=gpuArray(A);
+%D=gpuArray(B);
+
+mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).corr(1,counter_radii_mean)=corr2(A,B);
         end
+        %figure()
+        %scatter(A,B)
     end
 end
+
+[row,col]=find( mean.Beam3Processed_01817_s.TnD7.corr > 0.7)
+[row2,col2]=find(mean.Beam3Processed_01817_s.TnD7.corr < -0.7)
 %% plot res hor strauss exx/eyy for each pixel each straingauge each radius
 
 strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}));
