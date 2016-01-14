@@ -283,9 +283,18 @@ mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).corr(1,c
         %scatter(A,B)
     end
 end
-
-[row,col]=find( mean.Beam3Processed_01817_s.TnD7.corr > 0.7)
-[row2,col2]=find(mean.Beam3Processed_01817_s.TnD7.corr < -0.7)
+for counter_frames=1:count_frames
+    count_strgau=size(fieldnames(res_hor_pablo.(wframes_wo_ext{counter_frames})),1);
+    for counter_strgau=1:count_strgau
+    [~,corr_indices_greater{counter_frames,counter_strgau}]=find(mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).corr >= 0.7);
+    [~,corr_indices_less{counter_frames,counter_strgau}]=find(mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).corr <= -0.7);
+    
+    corr_indices_comp=cat(2,corr_indices_greater{counter_frames,counter_strgau},corr_indices_less{counter_frames,counter_strgau})
+    max_radius_corr_accept=max(corr_indices_comp)
+    res_max_radius_corr.hor.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).max_radius=mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radii{1,max_radius_corr_accept}{max_radius_corr_accept,1}
+    
+    end
+end
 %% plot res hor strauss exx/eyy for each pixel each straingauge each radius
 
 strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}));
