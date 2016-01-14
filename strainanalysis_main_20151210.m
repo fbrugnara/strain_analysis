@@ -373,7 +373,7 @@ for counter_strgau=1:count_strgau
             xlabel('loadlevels');
             ylabel('mean of exx [-]');
             legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
-            mean_strain(counter_frames,counter_radii,counter_strgau)=mean(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:));
+            mean_strain(counter_frames,counter_radii,counter_strgau)=mean2(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
             %plot(mean_strain(counter_frames))
         end
@@ -407,7 +407,7 @@ for counter_strgau=1:count_strgau
             xlabel('loadlevels');
             ylabel('mean of eyy [-]');
             legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
-            mean_strain(counter_frames,counter_radii,counter_strgau)=mean(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1));
+            mean_strain(counter_frames,counter_radii,counter_strgau)=mean2(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
         end
         plot(mean_strain(:,counter_radii,counter_strgau))
