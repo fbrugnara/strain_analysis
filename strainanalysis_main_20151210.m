@@ -253,6 +253,7 @@ end
 %end
 
 %% evaluate the correlation between radii and mean value of exx/eyy of the area corresponding to the position of the straingauges
+%horizontal
 
 count_frames=length(chosen_frames)
 for counter_frames=1:count_frames
@@ -292,7 +293,52 @@ for counter_frames=1:count_frames
     corr_indices_comp=cat(2,corr_indices_greater{counter_frames,counter_strgau},corr_indices_less{counter_frames,counter_strgau})
     max_radius_corr_accept=max(corr_indices_comp)
     res_max_radius_corr.hor.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).max_radius=mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radii{1,max_radius_corr_accept}{max_radius_corr_accept,1}
+    res_max_radius_corr.hor.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean_exx=mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean{1,max_radius_corr_accept}{max_radius_corr_accept,1}
+    end
+end
+
+%vertical
+
+count_frames=length(chosen_frames)
+for counter_frames=1:count_frames
+    count_strgau=size(fieldnames(res_vert_pablo.(wframes_wo_ext{counter_frames})),1)
+    for counter_strgau=1:count_strgau
+        count_radii_mean=size(res_vert_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean,1)
+        for counter_radii_mean=1:count_radii_mean
+            mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean{1,counter_radii_mean}=res_vert_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean(1:counter_radii_mean,1)
+            mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radii{1,counter_radii_mean}=res_vert_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radius(1:counter_radii_mean,1)
+        end
+    end
+end
+
+count_frames=length(chosen_frames)
+for counter_frames=1:count_frames
+    count_strgau=size(fieldnames(res_vert_pablo.(wframes_wo_ext{counter_frames})),1);
+    for counter_strgau=1:count_strgau
+        count_radii_mean=size(res_vert_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean,1);
+        for counter_radii_mean=1:count_radii_mean
+A=cell2mat(mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean{1,counter_radii_mean});
+B=cell2mat(mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radii{1,counter_radii_mean});
+%C=gpuArray(A);
+%D=gpuArray(B);
+
+mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).corr(1,counter_radii_mean)=corr2(A,B);
+        end
+        %figure()
+        %scatter(A,B)
+    end
+end
+
+for counter_frames=1:count_frames
+    count_strgau=size(fieldnames(res_vert_pablo.(wframes_wo_ext{counter_frames})),1);
+    for counter_strgau=1:count_strgau
+    [~,corr_indices_greater{counter_frames,counter_strgau}]=find(mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).corr >= 0.7);
+    [~,corr_indices_less{counter_frames,counter_strgau}]=find(mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).corr <= -0.7);
     
+    corr_indices_comp=cat(2,corr_indices_greater{counter_frames,counter_strgau},corr_indices_less{counter_frames,counter_strgau})
+    max_radius_corr_accept=max(corr_indices_comp)
+    res_max_radius_corr.vert.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).max_radius=mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radii{1,max_radius_corr_accept}{max_radius_corr_accept,1}
+    res_max_radius_corr.vert.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean_eyy=mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean{1,max_radius_corr_accept}{max_radius_corr_accept,1}
     end
 end
 %% plot res hor strauss exx/eyy for each pixel each straingauge each radius
@@ -362,7 +408,7 @@ legend_plot_res_vert_strauss.EdgeColor='white';
 end
 
 
-%% Mean of exx/eyy and corresponding radii per loadlevel for each straingauge position
+%% Strauss Mean of exx/eyy and corresponding radii per loadlevel for each straingauge position 
 % horziontal straingauges
 strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}));
 radii_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1}));
@@ -429,8 +475,63 @@ legend_plot_res_vert_strauss.Box='on';
 legend_plot_res_vert_strauss.EdgeColor='white';
 end
 
+%% Pablo plot exx / eyy mean per frame per dms of max radius
+%horizontal
+strgau_name=fieldnames(res_hor_pablo.(wframes_wo_ext{1}));
+count_strgau=length(fieldnames(res_max_radius_corr.hor.(wframes_wo_ext{1})));
+count_frames=length(fieldnames(res_max_radius_corr.hor));
+plot_res_hor_pablo=figure();
+for counter_strgau=1:count_strgau
+    for counter_frames=1:count_frames
+        exx_plot(counter_strgau,counter_frames)=res_max_radius_corr.hor.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean_exx
+        
+    end
+    hold on
+    subplot(count_strgau,1,counter_strgau)
+    plot(exx_plot(counter_strgau,:))
+    set(gca, 'XTickLabel',str_loadlevels, 'XTick',1:numel(str_loadlevels),'XTickLabelRotation',45)
+    plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' horizontal ');
+    title(plot_title);
+    xlabel('loadlevels');
+    ylabel('mean of exx [-]');
+    legend_entry=('rmax acceptable');
+    legend_plot_res_hor_pablo=legend(legend_entry);
+    legend_plot_res_hor_pablo.Location='bestoutside';
+    legend_plot_res_hor_pablo.Box='on';
+    legend_plot_res_hor_pablo.EdgeColor='white';
+    
+            
+
+end
 
 
+%vertical
+strgau_name=fieldnames(res_vert_pablo.(wframes_wo_ext{1}));
+count_strgau=length(fieldnames(res_max_radius_corr.vert.(wframes_wo_ext{1})));
+count_frames=length(fieldnames(res_max_radius_corr.vert));
+plot_res_vert_pablo=figure();
+for counter_strgau=1:count_strgau
+    for counter_frames=1:count_frames
+        eyy_plot(counter_strgau,counter_frames)=res_max_radius_corr.vert.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean_eyy
+        
+    end
+    hold on
+    subplot(count_strgau,1,counter_strgau)
+    plot(eyy_plot(counter_strgau,:))
+    set(gca, 'XTickLabel',str_loadlevels, 'XTick',1:numel(str_loadlevels),'XTickLabelRotation',45)
+    plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' vertical ');
+    title(plot_title);
+    xlabel('loadlevels');
+    ylabel('mean of eyy [-]');
+    legend_entry=('rmax acceptable');
+    legend_plot_res_hor_pablo=legend(legend_entry);
+    legend_plot_res_hor_pablo.Location='bestoutside';
+    legend_plot_res_hor_pablo.Box='on';
+    legend_plot_res_hor_pablo.EdgeColor='white';
+    
+            
+
+end
 
 
 
