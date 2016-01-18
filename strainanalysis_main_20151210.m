@@ -42,7 +42,7 @@ chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
 %% Evaluation of hor and vert straingauges 
 % read xls dms position data
 if exist('xls_filen','var') == 0 || exist('xls_path','var') == 0
-[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on');
+[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on','timerval');
 end
 %how many xls files:
 count_xls=length(xls_filen);
@@ -246,7 +246,7 @@ end
 varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius_strgau','res_hor_pablo','res_vert_pablo'};
 clearvars('-except',varnames{:});
 end
-toc
+timerval=toc
 
 end
 
@@ -257,17 +257,17 @@ end
 
 count_frames=length(chosen_frames)
 for counter_frames=1:count_frames
-    count_strgau=size(fieldnames(res_hor_pablo.(wframes_wo_ext{counter_frames})),1)
+    count_strgau=size(fieldnames(res_hor_pablo.(wframes_wo_ext{counter_frames})),1);
     for counter_strgau=1:count_strgau
-        count_radii_mean=size(res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean,1)
+        count_radii_mean=size(res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean,1);
         for counter_radii_mean=1:count_radii_mean
-            mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean{1,counter_radii_mean}=res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean(1:counter_radii_mean,1)
-            mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radii{1,counter_radii_mean}=res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radius(1:counter_radii_mean,1)
+            mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean{1,counter_radii_mean}=res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean(1:counter_radii_mean,1);
+            mean.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radii{1,counter_radii_mean}=res_hor_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).radius(1:counter_radii_mean,1);
         end
     end
 end
 
-count_frames=length(chosen_frames)
+count_frames=length(chosen_frames);
 for counter_frames=1:count_frames
     count_strgau=size(fieldnames(res_hor_pablo.(wframes_wo_ext{counter_frames})),1);
     for counter_strgau=1:count_strgau
@@ -305,8 +305,8 @@ for counter_frames=1:count_frames
     for counter_strgau=1:count_strgau
         count_radii_mean=size(res_vert_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean,1)
         for counter_radii_mean=1:count_radii_mean
-            mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean{1,counter_radii_mean}=res_vert_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean(1:counter_radii_mean,1)
-            mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radii{1,counter_radii_mean}=res_vert_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radius(1:counter_radii_mean,1)
+            mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean{1,counter_radii_mean}=res_vert_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean(1:counter_radii_mean,1);
+            mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radii{1,counter_radii_mean}=res_vert_pablo.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radius(1:counter_radii_mean,1);
         end
     end
 end
@@ -335,10 +335,10 @@ for counter_frames=1:count_frames
     [~,corr_indices_greater{counter_frames,counter_strgau}]=find(mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).corr >= 0.7);
     [~,corr_indices_less{counter_frames,counter_strgau}]=find(mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).corr <= -0.7);
     
-    corr_indices_comp=cat(2,corr_indices_greater{counter_frames,counter_strgau},corr_indices_less{counter_frames,counter_strgau})
+    corr_indices_comp=cat(2,corr_indices_greater{counter_frames,counter_strgau},corr_indices_less{counter_frames,counter_strgau});
     max_radius_corr_accept=max(corr_indices_comp)
-    res_max_radius_corr.vert.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).max_radius=mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radii{1,max_radius_corr_accept}{max_radius_corr_accept,1}
-    res_max_radius_corr.vert.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean_eyy=mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean{1,max_radius_corr_accept}{max_radius_corr_accept,1}
+    res_max_radius_corr.vert.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).max_radius=mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).radii{1,max_radius_corr_accept}{max_radius_corr_accept,1};
+    res_max_radius_corr.vert.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean_eyy=mean.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean{1,max_radius_corr_accept}{max_radius_corr_accept,1};
     end
 end
 %% plot res hor strauss exx/eyy for each pixel each straingauge each radius
@@ -483,7 +483,7 @@ count_frames=length(fieldnames(res_max_radius_corr.hor));
 plot_res_hor_pablo=figure();
 for counter_strgau=1:count_strgau
     for counter_frames=1:count_frames
-        exx_plot(counter_strgau,counter_frames)=res_max_radius_corr.hor.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean_exx
+        exx_plot(counter_strgau,counter_frames)=res_max_radius_corr.hor.(wframes_wo_ext{counter_frames}).(strgau_name_hor{counter_strgau}).mean_exx;
         
     end
     hold on
@@ -512,7 +512,7 @@ count_frames=length(fieldnames(res_max_radius_corr.vert));
 plot_res_vert_pablo=figure();
 for counter_strgau=1:count_strgau
     for counter_frames=1:count_frames
-        eyy_plot(counter_strgau,counter_frames)=res_max_radius_corr.vert.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean_eyy
+        eyy_plot(counter_strgau,counter_frames)=res_max_radius_corr.vert.(wframes_wo_ext{counter_frames}).(strgau_name_vert{counter_strgau}).mean_eyy;
         
     end
     hold on
