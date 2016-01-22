@@ -1,4 +1,4 @@
-%if 0==1
+% if 0==1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                     .--,                      
 %     .-''-,--.                                   .--,-``-.          :   /\                     
@@ -343,6 +343,7 @@ for counter_frames=1:count_frames
 end
 %% plot res hor strauss exx/eyy for each pixel each straingauge each radius
 
+loadlev=1:1:count_frames
 strgau_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}));
 radii_name=fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1}));
 count_frames=length(fieldnames(res_hor_strauss));
@@ -406,7 +407,7 @@ legend_plot_res_vert_strauss.Location='bestoutside';
 legend_plot_res_vert_strauss.Box='on';
 legend_plot_res_vert_strauss.EdgeColor='white';
 end
-
+% end
 
 %% Strauss Mean of exx/eyy and corresponding radii per loadlevel for each straingauge position 
 % horziontal straingauges
@@ -425,15 +426,20 @@ for counter_strgau=1:count_strgau
             hold on
             plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' horizontal ');
             title(plot_title);
-            xlabel('loadlevels');
-            ylabel('mean of exx [-]');
+            ylabel('loadlevels');
+            xlabel('mean of exx [-]');
             legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
             mean_strain(counter_frames,counter_radii,counter_strgau)=mean2(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
             %plot(mean_strain(counter_frames))
         end
-        plot(mean_strain(:,counter_radii,counter_strgau));
-        set(gca, 'XTickLabel',str_loadlevels, 'XTick',1:numel(str_loadlevels),'XTickLabelRotation',45);
+        plot(mean_strain(:,counter_radii,counter_strgau),loadlev);
+        xmin=-16*10^(-4);
+        xmax=14*10^(-4);
+        ymin=1;
+        ymax=9;
+        axis([xmin xmax ymin ymax]);
+        set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45);
     end
     position_plot=position_plot+1;
     legend_plot_res_hor_strauss=legend(legend_entry);
@@ -459,14 +465,19 @@ for counter_strgau=1:count_strgau
             hold on
             plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' vertical ');
             title(plot_title);
-            xlabel('loadlevels');
-            ylabel('mean of eyy [-]');
+            ylabel('loadlevels');
+            xlabel('mean of eyy [-]');
             legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
             mean_strain(counter_frames,counter_radii,counter_strgau)=mean2(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
         end
-        plot(mean_strain(:,counter_radii,counter_strgau))
-        set(gca, 'XTickLabel',str_loadlevels, 'XTick',1:numel(str_loadlevels),'XTickLabelRotation',45)
+        plot(mean_strain(:,counter_radii,counter_strgau),loadlev)
+        xmin=-6*10^(-4);
+        xmax=6*10^(-4);
+        ymin=1;
+        ymax=9;
+        axis([xmin xmax ymin ymax]);
+        set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
     end
     position_plot=position_plot+1;
     legend_plot_res_vert_strauss=legend(legend_entry);
@@ -488,12 +499,17 @@ for counter_strgau=1:count_strgau
     end
     hold on
     subplot(count_strgau,1,counter_strgau)
-    plot(exx_plot(counter_strgau,:))
-    set(gca, 'XTickLabel',str_loadlevels, 'XTick',1:numel(str_loadlevels),'XTickLabelRotation',45)
+    plot(exx_plot(counter_strgau,:),loadlev)
+    xmin=-16*10^(-4);
+    xmax=14*10^(-4);
+    ymin=1;
+    ymax=9;
+    axis([xmin xmax ymin ymax]);
+    set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
     plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' horizontal ');
     title(plot_title);
-    xlabel('loadlevels');
-    ylabel('mean of exx [-]');
+    ylabel('loadlevels');
+    xlabel('mean of exx [-]');
     legend_entry=('rmax acceptable');
     legend_plot_res_hor_pablo=legend(legend_entry);
     legend_plot_res_hor_pablo.Location='bestoutside';
@@ -517,25 +533,32 @@ for counter_strgau=1:count_strgau
     end
     hold on
     subplot(count_strgau,1,counter_strgau)
-    plot(eyy_plot(counter_strgau,:))
-    set(gca, 'XTickLabel',str_loadlevels, 'XTick',1:numel(str_loadlevels),'XTickLabelRotation',45)
+    plot(eyy_plot(counter_strgau,:),loadlev)
+    xmin=-6*10^(-4);
+    xmax=6*10^(-4);
+    ymin=1;
+    ymax=9;
+    axis([xmin xmax ymin ymax]);
+    set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
     plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' vertical ');
     title(plot_title);
-    xlabel('loadlevels');
-    ylabel('mean of eyy [-]');
+    ylabel('loadlevels');
+    xlabel('mean of eyy [-]');
     legend_entry=('rmax acceptable');
     legend_plot_res_hor_pablo=legend(legend_entry);
     legend_plot_res_hor_pablo.Location='bestoutside';
     legend_plot_res_hor_pablo.Box='on';
     legend_plot_res_hor_pablo.EdgeColor='white';
     
+    
             
 
 end
+print('res_vert_pablo','-dpdf')
 
 
-
-A=rand(1,9)
-loadlev=1:1:9
-plot(eyy_plot(1,:),loadlev)
-set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
+% Z=rand(1,9)
+% loadlev=1:1:9
+% plot(eyy_plot(1,:),loadlev)
+% axis([-2,-16,min(loadlev),max(loadlev)])
+% set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
