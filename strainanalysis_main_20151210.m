@@ -535,5 +535,7 @@ end
 
 
 
-
-
+A=rand(1,9)
+loadlev=1:1:9
+plot(eyy_plot(1,:),loadlev)
+set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)

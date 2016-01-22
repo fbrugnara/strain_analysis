@@ -9,7 +9,7 @@ height_beam=str2double(height_beam);
 beam_image=fullfile(beam_scale_path,beam_scale_filen);
 
 f = figure();
-f.MenuBar='none';
+%f.MenuBar='none';
 ax=gca;
 lines=10;
 imshow(beam_image,'Parent',ax);
