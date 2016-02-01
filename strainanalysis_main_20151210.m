@@ -42,7 +42,7 @@ chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
 %% Evaluation of hor and vert straingauges 
 % read xls dms position data
 if exist('xls_filen','var') == 0 || exist('xls_path','var') == 0
-[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS info','MultiSelect','on','timerval');
+[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS Position info','MultiSelect','on');
 end
 %how many xls files:
 count_xls=length(xls_filen);
@@ -124,6 +124,16 @@ raw_px.(xls_filen_wo_ext){1,counter3_sheets}{counter1_columns,counter2_strgau_sh
 end
 clearvars raw txt num
 end
+
+%% Get DMS-Data  
+
+% read xls dms position data
+if exist('dms_filen','var') == 0 || exist('dms_path','var') == 0
+[dms_xls_filen,dms_xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/07_DMSDATA','*.xlsx'),'Select .xlsx containing DMS Data','MultiSelect','off');
+end
+dms_xls_full=fullfile(dms_xls_path,dms_xls_filen);
+[num_dms_data,~,raw_dms_data]=xlsread(dms_xls_full,'Measurement - strain monitors');
+[highest_load_dms,row_highest_load_dms]=max(num_dms_data(:,1));
 
 %% Load frames
 lenChosenFrames=length(chosen_frames);
@@ -243,7 +253,7 @@ end
 
 
 
-varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius_strgau','res_hor_pablo','res_vert_pablo'};
+varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius_strgau','res_hor_pablo','res_vert_pablo','row_highest_load_dms','num_dms_data'};
 clearvars('-except',varnames{:});
 end
 timerval=toc
@@ -417,7 +427,8 @@ count_frames=length(fieldnames(res_hor_strauss));
 count_strgau=length(fieldnames(res_hor_strauss.(wframes_wo_ext{1})));
 count_radii=length(fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1})));
 plot_res_hor_strauss_a=figure();
-
+row_dms_xlsx_hor=[20,12,13];
+row_dms_xlsx_vert=[6,11,5,21,1337,22];
 position_plot=1;
 for counter_strgau=1:count_strgau
     for counter_radii=1:count_radii
@@ -431,16 +442,16 @@ for counter_strgau=1:count_strgau
             legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
             mean_strain(counter_frames,counter_radii,counter_strgau)=mean2(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
-            %plot(mean_strain(counter_frames))
         end
-        plot(mean_strain(:,counter_radii,counter_strgau),loadlev);
-        xmin=-16*10^(-4);
-        xmax=14*10^(-4);
-        ymin=1;
-        ymax=9;
-        axis([xmin xmax ymin ymax]);
-        set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45);
+        plot(mean_strain(:,counter_radii,counter_strgau),load_levels);
+%         xmin=-16*10^(-4);
+%         xmax=14*10^(-4);
+%         ymin=1;
+%         ymax=9;
+%         axis([xmin xmax ymin ymax]);
+        %set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45);
     end
+    plot(num_dms_data(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms));
     position_plot=position_plot+1;
     legend_plot_res_hor_strauss=legend(legend_entry);
 legend_plot_res_hor_strauss.Location='bestoutside';
@@ -471,13 +482,13 @@ for counter_strgau=1:count_strgau
             mean_strain(counter_frames,counter_radii,counter_strgau)=mean2(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
         end
-        plot(mean_strain(:,counter_radii,counter_strgau),loadlev)
-        xmin=-6*10^(-4);
-        xmax=6*10^(-4);
-        ymin=1;
-        ymax=9;
-        axis([xmin xmax ymin ymax]);
-        set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
+        plot(mean_strain(:,counter_radii,counter_strgau),load_levels)
+%         xmin=-6*10^(-4);
+%         xmax=6*10^(-4);
+%         ymin=1;
+%         ymax=9;
+%         axis([xmin xmax ymin ymax]);
+%         set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
     end
     position_plot=position_plot+1;
     legend_plot_res_vert_strauss=legend(legend_entry);
