@@ -135,6 +135,9 @@ dms_xls_full=fullfile(dms_xls_path,dms_xls_filen);
 [num_dms_data,~,raw_dms_data]=xlsread(dms_xls_full,'Measurement - strain monitors');
 [highest_load_dms,row_highest_load_dms]=max(num_dms_data(:,1));
 
+% Converting Units
+num_dms_data_converted=num_dms_data./1000;
+
 %% Load frames
 lenChosenFrames=length(chosen_frames);
 tic
@@ -253,7 +256,7 @@ end
 
 
 
-varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius_strgau','res_hor_pablo','res_vert_pablo','row_highest_load_dms','num_dms_data'};
+varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius_strgau','res_hor_pablo','res_vert_pablo','row_highest_load_dms','num_dms_data','num_dms_data_converted'};
 clearvars('-except',varnames{:});
 end
 timerval=toc
@@ -451,7 +454,7 @@ for counter_strgau=1:count_strgau
 %         axis([xmin xmax ymin ymax]);
         %set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45);
     end
-    plot(num_dms_data(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+    plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms));
     position_plot=position_plot+1;
     legend_plot_res_hor_strauss=legend(legend_entry);
 legend_plot_res_hor_strauss.Location='bestoutside';
@@ -490,6 +493,11 @@ for counter_strgau=1:count_strgau
 %         axis([xmin xmax ymin ymax]);
 %         set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
     end
+    if row_dms_xlsx_vert(counter_strgau)~=1337
+    plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_vert(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+    else
+        disp('lol zu diesem DMS hamma ka Daten lelelelelel');
+    end
     position_plot=position_plot+1;
     legend_plot_res_vert_strauss=legend(legend_entry);
 legend_plot_res_vert_strauss.Location='bestoutside';
@@ -511,12 +519,13 @@ for counter_strgau=1:count_strgau
     hold on
     subplot(count_strgau,1,counter_strgau)
     plot(exx_plot(counter_strgau,:),loadlev)
-    xmin=-16*10^(-4);
-    xmax=14*10^(-4);
-    ymin=1;
-    ymax=9;
-    axis([xmin xmax ymin ymax]);
-    set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
+    plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+%     xmin=-16*10^(-4);
+%     xmax=14*10^(-4);
+%     ymin=1;
+%     ymax=9;
+%     axis([xmin xmax ymin ymax]);
+    %set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
     plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' horizontal ');
     title(plot_title);
     ylabel('loadlevels');
@@ -526,7 +535,8 @@ for counter_strgau=1:count_strgau
     legend_plot_res_hor_pablo.Location='bestoutside';
     legend_plot_res_hor_pablo.Box='on';
     legend_plot_res_hor_pablo.EdgeColor='white';
-    
+   
+
             
 
 end
@@ -545,12 +555,17 @@ for counter_strgau=1:count_strgau
     hold on
     subplot(count_strgau,1,counter_strgau)
     plot(eyy_plot(counter_strgau,:),loadlev)
-    xmin=-6*10^(-4);
-    xmax=6*10^(-4);
-    ymin=1;
-    ymax=9;
-    axis([xmin xmax ymin ymax]);
-    set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
+    if row_dms_xlsx_vert(counter_strgau)~=1337
+    plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_vert(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+    else
+        disp('lol zu diesem DMS hamma ka Daten lelelelelel');
+    end
+%     xmin=-6*10^(-4);
+%     xmax=6*10^(-4);
+%     ymin=1;
+%     ymax=9;
+%     axis([xmin xmax ymin ymax]);
+%     set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
     plot_title=strcat('Straingauge: ',strgau_name{counter_strgau,1},' vertical ');
     title(plot_title);
     ylabel('loadlevels');
@@ -560,7 +575,7 @@ for counter_strgau=1:count_strgau
     legend_plot_res_hor_pablo.Location='bestoutside';
     legend_plot_res_hor_pablo.Box='on';
     legend_plot_res_hor_pablo.EdgeColor='white';
-    
+   
     
             
 
