@@ -18,6 +18,11 @@
 % Florian Brugnara & Felix Bugl 2015-12-10
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% Initial values 
+cal_scale_beam=53.6311;
+cal_x_origin=3133;
+cal_y_origin=172;
+cal_height_beam=45;
 
 %% Get Filenames and the Path of stitched fields(only works if they are in one directory:
 workingdir=mfilename('fullpath');
@@ -518,8 +523,8 @@ for counter_strgau=1:count_strgau
     end
     hold on
     subplot(count_strgau,1,counter_strgau)
-    plot(exx_plot(counter_strgau,:),loadlev)
-    plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+    plot(exx_plot(counter_strgau,:),load_levels,num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms))
+    %plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms));
 %     xmin=-16*10^(-4);
 %     xmax=14*10^(-4);
 %     ymin=1;
@@ -554,11 +559,12 @@ for counter_strgau=1:count_strgau
     end
     hold on
     subplot(count_strgau,1,counter_strgau)
-    plot(eyy_plot(counter_strgau,:),loadlev)
     if row_dms_xlsx_vert(counter_strgau)~=1337
-    plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_vert(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+    plot(eyy_plot(counter_strgau,:),load_levels,num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_vert(counter_strgau)),num_dms_data(1:row_highest_load_dms));
     else
         disp('lol zu diesem DMS hamma ka Daten lelelelelel');
+        plot(eyy_plot(counter_strgau,:),load_levels)
+
     end
 %     xmin=-6*10^(-4);
 %     xmax=6*10^(-4);
