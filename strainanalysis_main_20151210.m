@@ -141,7 +141,7 @@ dms_xls_full=fullfile(dms_xls_path,dms_xls_filen);
 [highest_load_dms,row_highest_load_dms]=max(num_dms_data(:,1));
 
 % Converting Units
-num_dms_data_converted=num_dms_data./1000;
+num_dms_data_converted=num_dms_data./1000000;
 
 %% Load frames
 lenChosenFrames=length(chosen_frames);
