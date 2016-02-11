@@ -1,4 +1,4 @@
-% if 0==1
+ if 0==1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                     .--,                      
 %     .-''-,--.                                   .--,-``-.          :   /\                     
@@ -461,10 +461,11 @@ for counter_strgau=1:count_strgau
             ylabel('loadlevels');
             xlabel('mean of exx [-]');
             legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
-            mean_strain(counter_frames,counter_radii,counter_strgau)=mean2(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:));
+            mean_strain_hor(counter_frames,counter_radii,counter_strgau)=mean2(res_hor_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).exx(1,:));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
+            
         end
-        plot(mean_strain(:,counter_radii,counter_strgau),load_levels);
+        plot(mean_strain_hor(:,counter_radii,counter_strgau),load_levels);
 %         xmin=-16*10^(-4);
 %         xmax=14*10^(-4);
 %         ymin=1;
@@ -501,10 +502,10 @@ for counter_strgau=1:count_strgau
             ylabel('loadlevels');
             xlabel('mean of eyy [-]');
             legend_entry{counter_radii}=strcat(radii_name{counter_radii},' mm');
-            mean_strain(counter_frames,counter_radii,counter_strgau)=mean2(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1));
+            mean_strain_vert(counter_frames,counter_radii,counter_strgau)=mean2(res_vert_strauss.(wframes_wo_ext{counter_frames}).(strgau_name{counter_strgau,1}).(radii_name{counter_radii,1}).eyy(:,1));
             str_loadlevels{counter_frames}=strcat('loadlevel: ',num2str(load_levels(counter_frames)),' kN');
         end
-        plot(mean_strain(:,counter_radii,counter_strgau),load_levels)
+        plot(mean_strain_vert(:,counter_radii,counter_strgau),load_levels)
 %         xmin=-6*10^(-4);
 %         xmax=6*10^(-4);
 %         ymin=1;
@@ -605,6 +606,45 @@ for counter_strgau=1:count_strgau
 
 end
 print('res_vert_pablo','-dpdf')
+end
+%%save data to plot in pgf
+
+% horizontal dms strauss save as csv
+num_frames=size(mean_strain_hor,1);
+num_radii=size(mean_strain_hor,2);
+num_strgau=size(mean_strain_hor,3);
+for count_strgau=1:num_strgau
+    save_as_csv={'loadlevels','r20','r15','r10'};
+    save_as_csv(2:10,1)=num2cell(rot90(load_levels,3));
+    for count_radii=1:num_radii
+    save_as_csv(2:10,1+count_radii)=num2cell(mean_strain_hor(:,count_radii,count_strgau));
+    end
+    save_as_csv_table=cell2table(save_as_csv(2:end,1:end),'VariableNames',{'loadlevels','r20','r15','r10'});
+    csv_filen=strcat('strauss_',strgau_name_hor{count_strgau},'.csv')
+    csv_filename=fullfile(workingdir,'../11_plot_csv/',csv_filen);
+    writetable(save_as_csv_table,csv_filename);
+end
+
+%vertical dms strauss save as csv
+num_frames=size(mean_strain_vert,1);
+num_radii=size(mean_strain_vert,2);
+num_strgau=size(mean_strain_vert,3);
+for count_strgau=1:num_strgau
+    save_as_csv={'loadlevels','r20','r15','r10'};
+    save_as_csv(2:10,1)=num2cell(rot90(load_levels,3));
+    for count_radii=1:num_radii
+    save_as_csv(2:10,1+count_radii)=num2cell(mean_strain_vert(:,count_radii,count_strgau));
+    end
+    save_as_csv_table=cell2table(save_as_csv(2:end,1:end),'VariableNames',{'loadlevels','r20','r15','r10'});
+    csv_filen=strcat('strauss_',strgau_name_vert{count_strgau},'.csv')
+    csv_filename=fullfile(workingdir,'../11_plot_csv/',csv_filen);
+    writetable(save_as_csv_table,csv_filename);
+end
+
+%% jirovsky atena
+
+% horizontal dms jirovsky save as csv
+
 
 
 % Z=rand(1,9)
