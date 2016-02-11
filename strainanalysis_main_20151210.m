@@ -643,9 +643,82 @@ end
 
 %% jirovsky atena
 
-% horizontal dms jirovsky save as csv
+% horizontal dms jirovsky atena save as csv
 
+num_frames=size(mean_strain_hor,1);
+num_radii=size(mean_strain_hor,2);
+num_strgau=size(mean_strain_hor,3);
+for count_strgau=1:num_strgau
+    %save_as_csv={'loadlevels','exx'};
+    %save_as_csv(2:10,1)=num2cell(rot90(load_levels,3));
+    
+    save_as_csv=cat(2,(num_dms_data_atena(4:290,row_dms_xlsx_hor_atena(count_strgau)-1)),num_dms_data_atena_converted(4:290,row_dms_xlsx_hor_atena(count_strgau)));
+    save_as_csv_table=array2table(save_as_csv,'VariableNames',{'loadlevels','exx'});
+    csv_filen=strcat('jirovsky_atena_',strgau_name_hor{count_strgau},'.csv')
+    csv_filename=fullfile(workingdir,'../11_plot_csv/',csv_filen);
+    writetable(save_as_csv_table,csv_filename);
+    
+end
 
+%vertical dms jirovsky atena save as csv
+
+num_frames=size(mean_strain_vert,1);
+num_radii=size(mean_strain_vert,2);
+num_strgau=size(mean_strain_vert,3);
+for count_strgau=1:num_strgau
+    %save_as_csv={'loadlevels','exx'};
+    %save_as_csv(2:10,1)=num2cell(rot90(load_levels,3));
+    if row_dms_xlsx_vert_atena(count_strgau)~=1337-6
+    save_as_csv=cat(2,(num_dms_data_atena(4:290,row_dms_xlsx_vert_atena(count_strgau)-1)),num_dms_data_atena_converted(4:290,row_dms_xlsx_vert_atena(count_strgau)));
+    save_as_csv_table=array2table(save_as_csv,'VariableNames',{'loadlevels','exx'});
+    csv_filen=strcat('jirovsky_atena_',strgau_name_vert{count_strgau},'.csv')
+    csv_filename=fullfile(workingdir,'../11_plot_csv/',csv_filen);
+    writetable(save_as_csv_table,csv_filename);
+    else
+             disp('lol zu diesem DMS hamma ka Daten lelelelelel');
+   
+    end
+end
+
+%% jirovsky experimental
+
+% horizontal dms jirovsky experimental save as csv
+num_frames=size(mean_strain_hor,1);
+%num_radii=size(mean_strain_hor,2);
+num_strgau=size(mean_strain_hor,3);
+for count_strgau=1:num_strgau
+    %save_as_csv={'loadlevels','exx'};
+    %save_as_csv(2:10,1)=num2cell(rot90(load_levels,3));
+    
+    save_as_csv=cat(2,num_dms_data(1:row_highest_load_dms,1),num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(count_strgau)));
+    save_as_csv_table=array2table(save_as_csv,'VariableNames',{'loadlevels','exx'});
+    csv_filen=strcat('jirovsky_experimental_',strgau_name_hor{count_strgau},'.csv')
+    csv_filename=fullfile(workingdir,'../11_plot_csv/',csv_filen);
+    writetable(save_as_csv_table,csv_filename);
+    
+end
+
+%vertical dms jirovsky experimental save as csv
+
+num_frames=size(mean_strain_vert,1);
+num_radii=size(mean_strain_vert,2);
+num_strgau=size(mean_strain_vert,3);
+for count_strgau=1:num_strgau
+    %save_as_csv={'loadlevels','exx'};
+    %save_as_csv(2:10,1)=num2cell(rot90(load_levels,3));
+    if row_dms_xlsx_vert(count_strgau)~=1337
+    save_as_csv=cat(2,num_dms_data(1:row_highest_load_dms,1),num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_vert(count_strgau)));
+    save_as_csv_table=array2table(save_as_csv,'VariableNames',{'loadlevels','exx'});
+    csv_filen=strcat('jirovsky_experimental_',strgau_name_vert{count_strgau},'.csv')
+    csv_filename=fullfile(workingdir,'../11_plot_csv/',csv_filen);
+    writetable(save_as_csv_table,csv_filename);
+    else
+                 disp('lol zu diesem DMS hamma ka Daten lelelelelel');
+    end
+    
+end
+plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+%plot(num_dms_data_atena_converted(4:290,row_dms_xlsx_hor_atena(counter_strgau)),num_dms_data_atena(4:290,row_dms_xlsx_hor_atena(counter_strgau)-1));
 
 % Z=rand(1,9)
 % loadlev=1:1:9
