@@ -538,7 +538,9 @@ for counter_strgau=1:count_strgau
     end
     hold on
     subplot(count_strgau,1,counter_strgau)
-    plot(exx_plot(counter_strgau,:),load_levels,num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms))
+    plot(exx_plot(counter_strgau,:),load_levels,num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms),num_dms_data_atena_converted(4:290,row_dms_xlsx_hor_atena(counter_strgau)),num_dms_data_atena(4:290,row_dms_xlsx_hor_atena(counter_strgau)-1))
+    %plot(num_dms_data_atena_converted(4:290,row_dms_xlsx_hor_atena(counter_strgau)),num_dms_data_atena(4:290,row_dms_xlsx_hor_atena(counter_strgau)-1));
+
     %plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms));
 %     xmin=-16*10^(-4);
 %     xmax=14*10^(-4);
@@ -575,7 +577,8 @@ for counter_strgau=1:count_strgau
     hold on
     subplot(count_strgau,1,counter_strgau)
     if row_dms_xlsx_vert(counter_strgau)~=1337
-    plot(eyy_plot(counter_strgau,:),load_levels,num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_vert(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+    plot(eyy_plot(counter_strgau,:),load_levels,num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_vert(counter_strgau)),num_dms_data(1:row_highest_load_dms),num_dms_data_atena_converted(4:290,row_dms_xlsx_vert_atena(counter_strgau)),num_dms_data_atena(4:290,row_dms_xlsx_vert_atena(counter_strgau)-1));
+    %plot(num_dms_data_atena_converted(4:290,row_dms_xlsx_hor_atena(counter_strgau)),num_dms_data_atena(4:290,row_dms_xlsx_hor_atena(counter_strgau)-1));
     else
         disp('lol zu diesem DMS hamma ka Daten lelelelelel');
         plot(eyy_plot(counter_strgau,:),load_levels)
