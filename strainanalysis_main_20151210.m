@@ -19,10 +19,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Initial values 
-% cal_scale_beam=53.6311;
-% cal_x_origin=3133;
-% cal_y_origin=172;
-% cal_height_beam=45;
+cal_scale_beam=53.6311;
+cal_x_origin=3133;
+cal_y_origin=172;
+cal_height_beam=45;
 
 %% Get Filenames and the Path of stitched fields(only works if they are in one directory:
 %Path inclusive filename of running script
@@ -55,7 +55,7 @@ chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
 % read xls dms position data
 % if path and filename of dms postion xls does not exist get it via gui
 if exist('xls_filen','var') == 0 || exist('xls_path','var') == 0
-[xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS Position info','MultiSelect','on');
+[xls_filen,xls_path]=uigetfile(fullfile(workingdir,'../08_DMSPos_xls','*.xls'),'Select .xls containing DMS Position info','MultiSelect','on');
 end
 %how many xls files:
 count_xls=length(xls_filen);
@@ -142,15 +142,16 @@ end
 
 % read xls dms position data
 if exist('dms_filen','var') == 0 || exist('dms_path','var') == 0
-[dms_xls_filen,dms_xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/07_DMSDATA','*.xlsx'),'Select .xlsx containing DMS Data','MultiSelect','off');
+[dms_xls_filen,dms_xls_path]=uigetfile(fullfile(workingdir,'../07_DMSDATA','*.xlsx'),'Select .xlsx containing DMS Data','MultiSelect','off');
 end
 dms_xls_full=fullfile(dms_xls_path,dms_xls_filen);
 [num_dms_data,~,raw_dms_data]=xlsread(dms_xls_full,'Measurement - strain monitors');
+[num_dms_data_atena,~,raw_dms_data_atena]=xlsread(dms_xls_full,'DMS_VERGLEICH');
 [highest_load_dms,row_highest_load_dms]=max(num_dms_data(:,1));
 
 % Converting Units
 num_dms_data_converted=num_dms_data./1000000;
-
+num_dms_data_atena_converted=num_dms_data_atena./1000000;
 %% Load frames
 lenChosenFrames=length(chosen_frames);
 tic
@@ -269,7 +270,7 @@ end
 
 
 
-varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius_strgau','res_hor_pablo','res_vert_pablo','row_highest_load_dms','num_dms_data','num_dms_data_converted'};
+varnames = {'workingdir','chosen_frames','counter1_chosenframes','waitb','lenChosenFrames','wframes_wo_ext','wframes','cal_scale_beam','cal_y_origin','cal_x_origin','cal_height_beam','xls_filen','xls_path','res_hor_strauss','res_vert_strauss','count_sheets','count_strgau_sheet','raw_px','strgau_name_hor','strgau_name_vert','max_radius_strgau','res_hor_pablo','res_vert_pablo','row_highest_load_dms','num_dms_data','num_dms_data_converted','num_dms_data_atena','num_dms_data_atena_converted'};
 clearvars('-except',varnames{:});
 end
 timerval=toc
@@ -444,7 +445,11 @@ count_strgau=length(fieldnames(res_hor_strauss.(wframes_wo_ext{1})));
 count_radii=length(fieldnames(res_hor_strauss.(wframes_wo_ext{1}).(strgau_name{1})));
 plot_res_hor_strauss_a=figure();
 row_dms_xlsx_hor=[20,12,13];
+row_dms_xlsx_hor_atena=[19,40,54];
+row_dms_xlsx_hor_atena=row_dms_xlsx_hor_atena-6;
 row_dms_xlsx_vert=[6,11,5,21,1337,22];
+row_dms_xls_vert_atena=[103,110,117,124,1337,138];
+row_dms_xls_vert_atena=row_dms_xls_vert_atena-6;
 position_plot=1;
 for counter_strgau=1:count_strgau
     for counter_radii=1:count_radii
@@ -468,6 +473,7 @@ for counter_strgau=1:count_strgau
         %set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45);
     end
     plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_hor(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+    plot(num_dms_data_atena_converted(4:290,row_dms_xlsx_hor_atena(counter_strgau)),num_dms_data_atena(4:290,row_dms_xlsx_hor_atena(counter_strgau)-1));
     position_plot=position_plot+1;
     legend_plot_res_hor_strauss=legend(legend_entry);
 legend_plot_res_hor_strauss.Location='bestoutside';
