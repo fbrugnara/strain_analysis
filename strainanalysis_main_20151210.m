@@ -448,8 +448,8 @@ row_dms_xlsx_hor=[20,12,13];
 row_dms_xlsx_hor_atena=[19,40,54];
 row_dms_xlsx_hor_atena=row_dms_xlsx_hor_atena-6;
 row_dms_xlsx_vert=[6,11,5,21,1337,22];
-row_dms_xls_vert_atena=[103,110,117,124,1337,138];
-row_dms_xls_vert_atena=row_dms_xls_vert_atena-6;
+row_dms_xlsx_vert_atena=[103,110,117,124,1337,138];
+row_dms_xlsx_vert_atena=row_dms_xlsx_vert_atena-6;
 position_plot=1;
 for counter_strgau=1:count_strgau
     for counter_radii=1:count_radii
@@ -513,7 +513,8 @@ for counter_strgau=1:count_strgau
 %         set(gca, 'YTickLabel',str_loadlevels, 'YTick',1:numel(str_loadlevels),'YTickLabelRotation',45)
     end
     if row_dms_xlsx_vert(counter_strgau)~=1337
-    plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_vert(counter_strgau)),num_dms_data(1:row_highest_load_dms));
+    plot(num_dms_data_converted(1:row_highest_load_dms,row_dms_xlsx_vert(counter_strgau)),num_dms_data(1:row_highest_load_dms)); 
+    plot(num_dms_data_atena_converted(4:290,row_dms_xlsx_vert_atena(counter_strgau)),num_dms_data_atena(4:290,row_dms_xlsx_vert_atena(counter_strgau)-1));
     else
         disp('lol zu diesem DMS hamma ka Daten lelelelelel');
     end
