@@ -19,13 +19,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Initial values 
-cal_scale_beam=53.6311;
-cal_x_origin=3133;
-cal_y_origin=172;
-cal_height_beam=45;
+% cal_scale_beam=53.6311;
+% cal_x_origin=3133;
+% cal_y_origin=172;
+% cal_height_beam=45;
 
 %% Get Filenames and the Path of stitched fields(only works if they are in one directory:
+%Path inclusive filename of running script
 workingdir=mfilename('fullpath');
+%just the path to the running script
 workingdir=fileparts(workingdir);
 
 
@@ -36,16 +38,22 @@ end
 
 
 %% Choose which Frames to use 
+% create path to StitchedFields 
 dir_stitchedfields = fullfile(workingdir,'../04_StitchedFields','*.mat');
+% get contents of path
 contents_stitchedfields=dir(dir_stitchedfields);
 if exist('res_hor_strauss','var') == 0 || exist('res_vert_strauss','var') == 0 || exist('res_hor_castillo','var') == 0 || exist('res_vert_castillo','var') == 0
+% get names of contents
 fieldnames_stitchedfields={contents_stitchedfields(:).name};
- [wframes,wframes_wo_ext,wframes_indices]=wframes_gui(fieldnames_stitchedfields);
+%run gui to select frames
+[wframes,wframes_wo_ext,wframes_indices]=wframes_gui(fieldnames_stitchedfields);
+%store path and filenames with extension of chosen frames in a variable
 chosen_frames=fullfile(workingdir,'../04_StitchedFields/',wframes);
     
 
 %% Evaluation of hor and vert straingauges 
 % read xls dms position data
+% if path and filename of dms postion xls does not exist get it via gui
 if exist('xls_filen','var') == 0 || exist('xls_path','var') == 0
 [xls_filen,xls_path]=uigetfile(fullfile('/home/bowkatz/Documents/MATLAB/BachelorThesis/08_DMSPos_xls','*.xls'),'Select .xls containing DMS Position info','MultiSelect','on');
 end
@@ -72,7 +80,7 @@ for counter1_xls=1:count_xls
     end
 
 end
-
+%% Save Hor and Vert Straingauge names in strgau_name_hor/vert
 for counter2_xls=1:count_xls
     xls_filename=xls_filen{counter2_xls};
     xls_full=fullfile(xls_path,xls_filename);
